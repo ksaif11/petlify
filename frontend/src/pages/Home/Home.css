@@ -1,0 +1,171 @@
+.home {
+  text-align: center;
+  background-color: #b6aeae; 
+  padding: 30px 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.hero {
+  background: url("https://source.unsplash.com/1600x600/?pet,dog,cat") no-repeat center center/cover;
+  color: rgb(184, 159, 159);
+  padding: 80px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero p {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 300;
+  color: #574343;
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 15px 30px;
+  background-color: #ff6600;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #e65c00;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow on hover */
+}
+
+/* Featured Pets */
+.featured {
+  margin-top: 40px;
+}
+
+.featured h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.featured-pets {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pet-card {
+  background: rgb(196, 237, 226);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.pet-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.pet-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.pet-card h3 {
+  margin-top: 15px;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.pet-card p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.categories {
+  margin-top: 50px;
+  padding: 20px 20px 50px;
+  background-color: #bbbaba;
+}
+
+.categories h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.category-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.category {
+  padding: 15px 30px;
+  border-radius: 25px;
+  text-decoration: none;
+  color: white;
+  font-size: 1.1rem;
+  background: #444;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.category:hover {
+  background: #222;
+}
+
+.stories {
+  margin-top: 60px;
+  padding: 40px 20px;
+  background-color: #dcedd4;
+}
+
+.stories h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.story-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.story {
+  max-width: 350px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.story span {
+  display: block;
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #777;
+  font-style: italic;
+}
