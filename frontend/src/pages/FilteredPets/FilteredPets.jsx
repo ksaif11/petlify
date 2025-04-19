@@ -24,10 +24,10 @@ const FilteredPets = () => {
         setLoading(true);
         setError("");
 
-        const response = await axios.get(`http://localhost:9000/api/pets/search?type=${petType}`);
+        const response = await axios.get(`https://petlify.onrender.com/api/pets/search?type=${petType}`);
         const updatedPets = response?.data.map(pet => ({
           ...pet,
-          image: pet.image?.startsWith("http") ? pet.image : `http://localhost:9000${pet.image}`
+          image: pet.image?.startsWith("http") ? pet.image : `https://petlify.onrender.com${pet.image}`
         }));
         setPets(updatedPets);
       } catch (error) {

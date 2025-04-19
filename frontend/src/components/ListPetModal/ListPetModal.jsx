@@ -65,7 +65,7 @@ const ListPetModal = ({ onClose, onPetAdded }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post("http://localhost:9000/api/pets", petData, {
+      const response = await axios.post("https://petlify.onrender.com/api/pets", petData, {
         headers: { 
           Authorization: `Bearer ${token}`, 
           "Content-Type": "multipart/form-data",

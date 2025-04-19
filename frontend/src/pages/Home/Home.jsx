@@ -13,12 +13,12 @@ const Home = () => {
       try {
         setLoading(true);
         setError("");
-        const response = await axios.get("http://localhost:9000/api/pets/all");
+        const response = await axios.get("https://petlify.onrender.com/api/pets/all");
         const updatedPets = response?.data.map((pet) => ({
           ...pet,
           image: pet.image?.startsWith("http")
             ? pet.image
-            : `http://localhost:9000${pet.image}`,
+            : `https://petlify.onrender.com${pet.image}`,
         }));
         setFeaturedPets(updatedPets?.slice(0, 3)); // Show only 3 featured pets
       } catch (error) {

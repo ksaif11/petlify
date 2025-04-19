@@ -13,7 +13,7 @@ const PetList = () => {
       // Ensure the image URL is absolute
       const updatedPets = data.map(pet => ({
         ...pet,
-        image: pet.image?.startsWith("http") ? pet.image : `http://localhost:9000${pet.image}`
+        image: pet.image?.startsWith("http") ? pet.image : `https://petlify.onrender.com${pet.image}`
       }));
       setPets(updatedPets); 
     };
