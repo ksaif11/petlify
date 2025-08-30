@@ -1,0 +1,31 @@
+.toast-test {
+  padding: 2rem;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.toast-test h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.toast-test p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.test-btn {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.test-btn:hover {
+  background: #7c3aed;
+}

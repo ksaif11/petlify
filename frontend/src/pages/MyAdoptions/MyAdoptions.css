@@ -1,104 +1,78 @@
 /* src/pages/MyAdoptions/MyAdoptions.css */
 
 .my-adoptions-page {
-  padding: 2rem;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 200px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.my-adoptions-page h1 {
   text-align: center;
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-h1 {
-  font-size: 2.5rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.loading-text,
-.error-text {
-  font-size: 1.5rem;
-  color: #555;
-  font-weight: bold;
-  margin-top: 20px;
-}
-
-.error-text {
-  color: red;
-}
-
-.requests-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 700px;
-  width: 100%;
-  margin: 20px auto;
-}
-
-/* Bigger Card Design */
-.request-card {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease-in-out;
-  gap: 20px;
-  width: 100%;
-}
-
-.request-card:hover {
-  transform: scale(1.03);
-}
-
-.pet-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 12px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.request-info {
-  flex-grow: 1;
-  text-align: left;
-}
-
-.request-info h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: #222;
-}
-
-.request-info p {
-  margin: 8px 0;
+.loading-text {
+  text-align: center;
   font-size: 1.2rem;
-  color: #444;
+  color: #666;
+  margin: 2rem 0;
 }
 
-/* Status Styling */
-.status {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-transform: capitalize;
-  display: inline-block;
+.error-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #dc3545;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f8d7da;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
 }
 
-/* Different status colors */
-.status.pending {
-  background-color: #ffc107;
-  color: black;
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
 }
 
-.status.approved {
-  background-color: #28a745;
-  color: white;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .my-adoptions-page h1 {
+    font-size: 2rem;
+  }
+  
+  .requests-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
 }
 
-.status.rejected {
-  background-color: #dc3545;
-  color: white;
+@media (max-width: 480px) {
+  .my-adoptions-page {
+    padding: 1rem 0;
+  }
+  
+  .my-adoptions-page h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .requests-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }

@@ -16,3 +16,10 @@ export const authenticate = async (req, res, next) => {
     res.status(401).json({ message: "Invalid token " + error.message });
   }
 };
+
+export const requireOrganization = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: "Access denied. Organization access required." });
+  }
+  next();
+};

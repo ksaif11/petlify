@@ -1,66 +1,123 @@
 import axios from 'axios';
 
-const API_URL = 'https://petlify.onrender.com/api';
+// Determine API URL based on environment
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:9000/api';
 
+// Create axios instance with base configuration
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor to add JWT token to all requests
+api.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle token expiration
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid, redirect to login
+      sessionStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    
+    // Enhance error object with better error message
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error || 
+                        error.message || 
+                        'An unexpected error occurred';
+    
+    error.userMessage = errorMessage;
+    return Promise.reject(error);
+  }
+);
+
+// Auth API functions
 export const register = async (userData) => {
-  const response = await axios.post(`${API_URL}/auth/register`, userData);
+  const response = await api.post('/auth/register', userData);
   return response.data;
 };
 
 export const login = async (userData) => {
-  const response = await axios.post(`${API_URL}/auth/login`, userData);
+  const response = await api.post('/auth/login', userData);
   return response.data;
 };
 
+// Pet API functions
 export const getAllPets = async () => {
-  const response = await axios.get(`${API_URL}/pets/all`);
+  const response = await api.get('/pets/all');
+  return response.data;
+};
+
+export const getFeaturedPets = async () => {
+  const response = await api.get('/pets/featured');
   return response.data;
 };
 
 export const getPetById = async (petId) => {
-  const response = await axios.get(`${API_URL}/pets/${petId}`);
+  const response = await api.get(`/pets/${petId}`);
   return response.data;
 };
 
-export const submitAdoptionRequest = async (petId, token) => {
-  const response = await axios.post(
-    `${API_URL}/adoptions`,
-    { petId },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return response.data;
-};
-
-export const getUserAdoptionRequests = async (token) => {
-  const response = await axios.get(`${API_URL}/adoptions/my-requests`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
-
-export const updateAdoptionRequestStatus = async (requestId, status, token) => {
-  const response = await axios.put(
-    `${API_URL}/adoptions/update-status`,
-    { requestId, status },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return response.data;
-};
-
-export const submitPet = async (petData, token) => {
-  const response = await axios.post(`${API_URL}/pets`, petData, {
+export const submitPet = async (petData) => {
+  const response = await api.post('/pets', petData, {
     headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
     },
   });
   return response.data;
 };
 
-export const getUserPets = async (token) => {
-  return axios.get("/pets/my-pets", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+// Adoption API functions
+export const submitAdoptionRequest = async (adoptionData) => {
+  const response = await api.post('/adoptions', adoptionData);
+  return response.data;
 };
+
+export const getUserAdoptionRequests = async () => {
+  const response = await api.get('/adoptions/my-requests');
+  return response.data;
+};
+
+export const updateAdoptionRequestStatus = async (requestId, status) => {
+  const response = await api.put('/adoptions/update-status', { requestId, status });
+  return response.data;
+};
+
+// Organization API functions
+export const getAllAdoptionRequests = async () => {
+  const response = await api.get('/adoptions/all');
+  return response.data;
+};
+
+export const getPendingAdoptionRequests = async () => {
+  const response = await api.get('/adoptions/pending');
+  return response.data;
+};
+
+export const getPendingPetSubmissions = async () => {
+  const response = await api.get('/pets/pending/submissions');
+  return response.data;
+};
+
+export const updatePetStatus = async (petId, status) => {
+  const response = await api.put('/pets/update-status', { petId, status });
+  return response.data;
+};
+
+// Export the api instance for custom requests
+export default api;

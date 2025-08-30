@@ -1,86 +1,50 @@
 .pet-detail-page {
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 200px);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
-  padding: 20px;
+  min-height: 400px;
 }
 
-.pet-detail-container {
-  display: flex;
-  flex-direction: row;
-  max-width: 900px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  padding: 20px;
-  transition: transform 0.3s ease;
+.loading-text {
+  font-size: 1.2rem;
+  color: #666;
+  text-align: center;
 }
 
-.pet-detail-container:hover {
-  transform: scale(1.02);
+/* Pet Detail Card Styles */
+.pet-detail-page .pet-detail-card {
+  margin: 0 auto;
 }
 
-.pet-detail-image {
-  width: 50%;
-  height: auto;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-.pet-detail-info {
-  width: 50%;
-  padding: 20px;
-  text-align: left;
-}
-
-.pet-detail-info h1 {
-  font-size: 28px;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.pet-detail-info p {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.adopt-btn {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 20px;
-  background-color: #ff5733;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.adopt-btn:hover {
-  background-color: #e64a2e;
-  transform: translateY(-3px);
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
-  .pet-detail-container {
-    flex-direction: column;
-    max-width: 90%;
+  .pet-detail-page {
+    padding: 1rem 0;
   }
-
-  .pet-detail-image,
-  .pet-detail-info {
-    width: 100%;
+  
+  .container {
+    padding: 0 0.5rem;
   }
+}
 
-  .pet-detail-image {
-    max-height: 300px;
+@media (max-width: 480px) {
+  .pet-detail-page {
+    padding: 0.5rem 0;
+  }
+  
+  .container {
+    padding: 0 0.25rem;
   }
 }

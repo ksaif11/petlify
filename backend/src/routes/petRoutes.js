@@ -1,18 +1,29 @@
 import express from "express";
-import { addPet, getAllPets, getPetById, getPetsByUser, searchPets } from "../Controllers/petController.js";
-import { authenticate } from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js";
+import {
+  submitPet,
+  getAllPets,
+  getPetById,
+  updatePet,
+  deletePet,
+  getPendingPetSubmissions,
+  updatePetStatus,
+  getFeaturedPets,
+} from "../Controllers/petController.js";
+import { authenticate, requireOrganization } from "../middleware/authMiddleware.js";
+import { uploadMultiple } from "../middleware/uploadMiddleware.js";
 
+const router = express.Router();
 
-const petRouter = express.Router();
+router.post("/submit", authenticate, uploadMultiple, submitPet);
+router.get("/", getAllPets);
+router.get("/featured", getFeaturedPets);
+router.get("/:id", getPetById);
+router.put("/:id", authenticate, updatePet);
+router.delete("/:id", authenticate, deletePet);
 
-petRouter.post("/", authenticate, upload.single("image"), addPet);
-petRouter.get("/search", searchPets); // New route for filtering
-petRouter.get("/all", getAllPets);
-petRouter.get("/:id", getPetById);
-petRouter.get("/my-pets", authenticate, getPetsByUser);
+router.get("/admin/pending", authenticate, requireOrganization, getPendingPetSubmissions);
+router.put("/admin/:id/status", authenticate, requireOrganization, updatePetStatus);
 
-
-export default petRouter;
+export default router;
 
 

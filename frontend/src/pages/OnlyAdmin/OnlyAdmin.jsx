@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { getUserAdoptionRequests, updateAdoptionRequestStatus } from "../../api";
+import { showError, showSuccess } from "../../utils/toast";
+import UnifiedPetCard from "../../components/UnifiedPetCard/UnifiedPetCard";
+import "./OnlyAdmin.css";
 
 const OnlyAdmin = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState({});
-  const token = sessionStorage.getItem("token"); 
+  const [selectedStatus, setSelectedStatus] = useState({}); 
 
   useEffect(() => {
     fetchAdoptionRequests();
@@ -14,7 +16,7 @@ const OnlyAdmin = () => {
 
   const fetchAdoptionRequests = async () => {
     try {
-      const data = await getUserAdoptionRequests(token);
+      const data = await getUserAdoptionRequests();
       setRequests(data);
       setLoading(false);
     } catch (err) {
@@ -26,64 +28,92 @@ const OnlyAdmin = () => {
   const handleStatusChange = async (requestId) => {
     try {
       const newStatus = selectedStatus[requestId] || "pending";
-      await updateAdoptionRequestStatus(requestId, newStatus, token);
+      await updateAdoptionRequestStatus(requestId, newStatus);
       fetchAdoptionRequests();
-      alert("adoption request status successfully updated")
+      showSuccess("Adoption request status successfully updated");
     } catch (err) {
-      setError("Error updating status");
+      const errorMessage = err.userMessage || "Error updating status";
+      setError(errorMessage);
+      showError(errorMessage);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  const handleAction = (action, requestId) => {
+    if (action === 'update') {
+      handleStatusChange(requestId);
+    }
+  };
+
+  if (loading) return (
+    <div className="admin-page">
+      <div className="container">
+        <p className="loading-text">Loading adoption requests...</p>
+      </div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="admin-page">
+      <div className="container">
+        <p className="error-text">Error: {error}</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div>
-      <h2>Admin Panel - Manage Adoption Requests</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Pet Name</th>
-            <th>Requested By</th>
-            <th>Status</th>
-            <th>Update</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="admin-page">
+      <div className="container">
+        <div className="admin-header">
+          <h1>Admin Panel - Manage Adoption Requests</h1>
+          <p>Review and update the status of adoption requests</p>
+        </div>
+
+        <div className="admin-content">
           {requests.length > 0 ? (
-            requests.map((req) => (
-              <tr key={req._id}>
-                <td>{req.pet?.name || "Unknown"}</td>
-                <td>{req.user?.email || "Unknown"}</td>
-                <td>
-                  <select
-                    value={selectedStatus[req._id] || req.status}
-                    onChange={(e) =>
-                      setSelectedStatus({
-                        ...selectedStatus,
-                        [req._id]: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                </td>
-                <td>
-                  <button onClick={() => handleStatusChange(req._id)}>
-                    Update
-                  </button>
-                </td>
-              </tr>
-            ))
+            <div className="requests-grid">
+              {requests.map((request) => (
+                <div key={request._id} className="admin-request-wrapper">
+                  <UnifiedPetCard
+                    request={request}
+                    mode="admin"
+                    showStatus={true}
+                    showUserInfo={true}
+                    showRequestDate={true}
+                    showDescription={false}
+                  />
+                  <div className="admin-controls">
+                    <select
+                      value={selectedStatus[request._id] || request.status}
+                      onChange={(e) =>
+                        setSelectedStatus({
+                          ...selectedStatus,
+                          [request._id]: e.target.value,
+                        })
+                      }
+                      className="status-select"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                    <button 
+                      onClick={() => handleAction('update', request._id)}
+                      className="update-btn"
+                      disabled={selectedStatus[request._id] === request.status}
+                    >
+                      Update Status
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <tr>
-              <td colSpan="4">No adoption requests found.</td>
-            </tr>
+            <div className="no-requests">
+              <p>No adoption requests found.</p>
+            </div>
           )}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 };

@@ -7,21 +7,34 @@ import petRouter from "./routes/petRoutes.js";
 import adoptionRouter from "./routes/adoptionRouter.js";
 
 dotenv.config();
-ConnectDB();
 
 const app = express();
-app.use("/uploads", express.static("uploads"));
+const PORT = process.env.PORT || 9000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000',
+    'https://petlify.onrender.com',
+    'https://petlify-frontend.vercel.app'
+  ],
+  credentials: true
+}));
+
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRouter);
 app.use("/api/pets", petRouter);
 app.use("/api/adoptions", adoptionRouter);
 
-const PORT = 9000;
+app.get("/", (req, res) => {
+  res.json({ message: "PetLify API is running" });
+});
 
-app.listen(PORT, () => {
-  console.log(`Server is running at PORT ${PORT}`);
+ConnectDB().then(() => {
+  app.listen(PORT, () => {
+  });
 });

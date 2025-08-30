@@ -1,11 +1,20 @@
 import express from "express";
-import { submitAdoptionRequest, getUserAdoptionRequests, updateAdoptionRequestStatus } from "../Controllers/adoptionController.js";
-import { authenticate } from "../middleware/authMiddleware.js";
+import {
+  submitAdoptionRequest,
+  getUserAdoptionRequests,
+  getAllAdoptionRequests,
+  getPendingAdoptionRequests,
+  updateAdoptionRequestStatus,
+} from "../Controllers/adoptionController.js";
+import { authenticate, requireOrganization } from "../middleware/authMiddleware.js";
 
-const adoptionRouter = express.Router();
+const router = express.Router();
 
-adoptionRouter.post("/", authenticate, submitAdoptionRequest);
-adoptionRouter.get("/my-requests", authenticate, getUserAdoptionRequests);
-adoptionRouter.put("/update-status", authenticate, updateAdoptionRequestStatus);
+router.post("/submit", authenticate, submitAdoptionRequest);
+router.get("/user", authenticate, getUserAdoptionRequests);
 
-export default adoptionRouter;
+router.get("/admin/all", authenticate, requireOrganization, getAllAdoptionRequests);
+router.get("/admin/pending", authenticate, requireOrganization, getPendingAdoptionRequests);
+router.put("/admin/:id/status", authenticate, requireOrganization, updateAdoptionRequestStatus);
+
+export default router;

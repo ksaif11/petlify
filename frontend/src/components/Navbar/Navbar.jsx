@@ -4,6 +4,7 @@ import "./Navbar.css";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!sessionStorage.getItem("token"));
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const profileRef = useRef(null);
@@ -11,10 +12,18 @@ const Navbar = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     setIsLoggedIn(!!token);
+    
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setIsAdmin(payload.isAdmin || false);
+      } catch (error) {
+        setIsAdmin(false);
+      }
+    }
   }, []);
 
   useEffect(() => {
-    // Close the profile menu if user clicks outside
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setIsProfileOpen(false);
@@ -28,33 +37,57 @@ const Navbar = () => {
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     setIsLoggedIn(false);
+    setIsAdmin(false);
     navigate("/login");
     setIsProfileOpen(false);
   };
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo">
-        <Link to="/">Petlify</Link>
-      </div>
-      <div className="navbar-links">
-        <Link to="/pets/all">Pets</Link>
-        {isLoggedIn ? (
-          <div className="profile-container" ref={profileRef}>
-            <button className="profile-btn" onClick={() => setIsProfileOpen((prev) => !prev)}>
-              Profile
-            </button>
-            {isProfileOpen && (
-              <div className="profile-dropdown">
-                <ul onClick={() => { navigate("/submit-pet"); setIsProfileOpen(false); }}>List Pets for Adoption</ul>
-                <ul onClick={() => { navigate("/my-adoptions"); setIsProfileOpen(false); }}>Adoption Requests</ul>
-                <ul onClick={handleLogout}>Logout</ul>
-              </div>
-            )}
-          </div>
-        ) : (
-          <Link to="/login">Login</Link>
-        )}
+      <div className="nav-container">
+        <Link to="/" className="nav-logo">
+          PetLify
+        </Link>
+        
+        <div className="nav-menu">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/pets" className="nav-link">Find Pets</Link>
+          <Link to="/submit-pet" className="nav-link">Submit Pet</Link>
+          {isAdmin && (
+            <Link to="/admin" className="nav-link">Admin</Link>
+          )}
+          {isLoggedIn && (
+            <>
+              <Link to="/my-adoptions" className="nav-link">My Adoptions</Link>
+              <Link to="/organization" className="nav-link">Organization</Link>
+            </>
+          )}
+        </div>
+
+        <div className="nav-auth">
+          {!isLoggedIn ? (
+            <>
+              <Link to="/login" className="nav-link">Login</Link>
+              <Link to="/register" className="nav-link register-btn">Register</Link>
+            </>
+          ) : (
+            <div className="profile-menu" ref={profileRef}>
+              <button 
+                className="profile-toggle"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+              >
+                Profile ▼
+              </button>
+              {isProfileOpen && (
+                <div className="profile-dropdown">
+                  <button onClick={handleLogout} className="logout-btn">
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
