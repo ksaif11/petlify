@@ -1,20 +1,9 @@
-// Validation utility functions
 
-/**
- * Validate email format
- * @param {string} email - Email to validate
- * @returns {boolean} True if valid
- */
 export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-/**
- * Validate password strength
- * @param {string} password - Password to validate
- * @returns {Object} Validation result with isValid and message
- */
 export const validatePassword = (password) => {
   if (!password) {
     return { isValid: false, message: 'Password is required' };
@@ -27,12 +16,6 @@ export const validatePassword = (password) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate required field
- * @param {string} value - Value to validate
- * @param {string} fieldName - Name of the field for error message
- * @returns {Object} Validation result
- */
 export const validateRequired = (value, fieldName) => {
   if (!value || value.trim() === '') {
     return { isValid: false, message: `${fieldName} is required` };
@@ -40,17 +23,11 @@ export const validateRequired = (value, fieldName) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate phone number
- * @param {string} phone - Phone number to validate
- * @returns {Object} Validation result
- */
 export const validatePhone = (phone) => {
   if (!phone) {
     return { isValid: false, message: 'Phone number is required' };
   }
   
-  // Remove all non-digit characters
   const cleanPhone = phone.replace(/\D/g, '');
   
   if (cleanPhone.length < 10) {
@@ -60,11 +37,6 @@ export const validatePhone = (phone) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate age (must be positive number)
- * @param {string|number} age - Age to validate
- * @returns {Object} Validation result
- */
 export const validateAge = (age) => {
   if (!age) {
     return { isValid: false, message: 'Age is required' };
@@ -82,11 +54,6 @@ export const validateAge = (age) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate weight (must be positive number)
- * @param {string|number} weight - Weight to validate
- * @returns {Object} Validation result
- */
 export const validateWeight = (weight) => {
   if (!weight) {
     return { isValid: false, message: 'Weight is required' };
@@ -104,11 +71,6 @@ export const validateWeight = (weight) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate ZIP code
- * @param {string} zipCode - ZIP code to validate
- * @returns {Object} Validation result
- */
 export const validateZipCode = (zipCode) => {
   if (!zipCode) {
     return { isValid: false, message: 'ZIP code is required' };
@@ -122,18 +84,11 @@ export const validateZipCode = (zipCode) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate file upload
- * @param {File} file - File to validate
- * @param {number} maxSize - Maximum file size in MB
- * @returns {Object} Validation result
- */
 export const validateFile = (file, maxSize = 5) => {
   if (!file) {
     return { isValid: false, message: 'File is required' };
   }
   
-  // Check file type
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
   if (!allowedTypes.includes(file.type)) {
     return { isValid: false, message: 'Only image files (JPEG, PNG, GIF, WebP) are allowed' };
@@ -148,13 +103,6 @@ export const validateFile = (file, maxSize = 5) => {
   return { isValid: true, message: '' };
 };
 
-/**
- * Validate multiple files
- * @param {FileList|Array} files - Files to validate
- * @param {number} maxFiles - Maximum number of files
- * @param {number} maxSize - Maximum file size in MB
- * @returns {Object} Validation result
- */
 export const validateMultipleFiles = (files, maxFiles = 5, maxSize = 5) => {
   if (!files || files.length === 0) {
     return { isValid: false, message: 'At least one image is required' };
@@ -172,4 +120,22 @@ export const validateMultipleFiles = (files, maxFiles = 5, maxSize = 5) => {
   }
   
   return { isValid: true, message: '' };
+};
+
+export const validateYesNo = (value) => {
+  if (!value) {
+    return false;
+  }
+  
+  const lowerValue = value.toLowerCase().trim();
+  return lowerValue === 'yes' || lowerValue === 'no';
+};
+
+export const validateNumber = (value) => {
+  if (!value) {
+    return false;
+  }
+  
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= 0;
 };
