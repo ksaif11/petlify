@@ -12,14 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:3000',
-    'https://petlify.onrender.com',
-    'https://petlify-frontend.vercel.app'
-  ],
+  origin: true,
   credentials: true
 }));
 
@@ -30,9 +23,10 @@ app.use("/api/auth", authRouter);
 app.use("/api/pets", petRouter);
 app.use("/api/adoptions", adoptionRouter);
 
-app.get("/", (req, res) => {
-  res.json({ message: "PetLify API is running" });
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
+
 
 ConnectDB().then(() => {
   app.listen(PORT, () => {
