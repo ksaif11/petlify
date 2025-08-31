@@ -13,6 +13,8 @@ const Home = () => {
       try {
         const pets = await getFeaturedPets();
         setFeaturedPets(pets);
+        console.log(pets, "???");
+        
       } catch {
         setFeaturedPets([]);
       } finally {
@@ -55,7 +57,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="featured-pets-grid">
-              {featuredPets.map((pet) => (
+              {featuredPets?.map((pet) => (
                 <div key={pet._id} className="featured-pet-card">
                   <div className="pet-image-container">
                     <img

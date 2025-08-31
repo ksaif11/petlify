@@ -11,10 +11,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
+// CORS configuration
+const corsOptions = {
+  origin: true, // Allow requests from everywhere
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,15 +28,17 @@ app.use("/api/auth", authRouter);
 app.use("/api/pets", petRouter);
 app.use("/api/adoptions", adoptionRouter);
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get("/", (req, res) => {
+  res.json({ message: "PetLify API is running" });
 });
 
 
 ConnectDB().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log(`API available at http://localhost:${PORT}/api`);
   });
 }).catch((error) => {
   console.error("Failed to start server:", error);
 });
+

@@ -1,7 +1,7 @@
 .unified-pet-card {
   background: var(--bg-primary);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: var(--transition);
   border: 1px solid var(--border-color);
@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 500px;
+  min-height: 320px;
 }
 
 .unified-pet-card::before {
@@ -18,19 +18,19 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 2px;
   background: var(--primary-color);
 }
 
 .unified-pet-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .card-image-section {
   position: relative;
   width: 100%;
-  height: 280px;
+  height: 140px;
   overflow: hidden;
   background: #f8f9fa;
   display: flex;
@@ -47,18 +47,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   z-index: 2;
   color: var(--text-secondary);
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   font-weight: 500;
 }
 
 .loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--border-color);
-  border-top: 3px solid var(--primary-color);
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -100,19 +100,19 @@
 
 .status-overlay {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 6px;
+  right: 6px;
   z-index: 2;
 }
 
 .status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .status-badge.pending {
@@ -134,7 +134,7 @@
 }
 
 .card-content {
-  padding: 1.5rem;
+  padding: 0.75rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -145,78 +145,96 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   gap: 0.5rem;
 }
 
 .card-header h3 {
-  font-size: 1.25rem;
+  font-size: 0.95rem;
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
   line-height: 1.3;
   flex: 1;
+  text-transform: capitalize;
 }
 
 .pet-details {
   flex: 1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .pet-details p {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
   color: var(--text-secondary);
+  font-weight: 500;
+  display: block;
+  padding: 0.2rem 0;
+}
+
+.pet-details p:last-child {
+  margin-bottom: 0;
 }
 
 .pet-details strong {
   color: var(--text-primary);
   font-weight: 600;
+  text-transform: capitalize;
+  font-size: 0.7rem;
+  display: inline-block;
+  margin-right: 0.5rem;
 }
 
 .user-info {
   background: var(--bg-secondary);
-  padding: 1rem;
-  border-radius: var(--border-radius-sm);
-  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
   border: 1px solid var(--border-color);
 }
 
 .user-info p {
-  margin-bottom: 0.25rem;
-  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.user-info p:last-child {
+  margin-bottom: 0;
 }
 
 .request-date {
   background: var(--bg-tertiary);
-  padding: 0.75rem;
-  border-radius: var(--border-radius-sm);
-  margin-bottom: 1rem;
-  border-left: 3px solid var(--primary-color);
+  padding: 0.4rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border-left: 2px solid var(--primary-color);
 }
 
 .request-date p {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .card-actions {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.4rem;
 }
 
 .details-btn,
 .adopt-btn,
 .action-btn {
   width: 100%;
-  padding: 0.875rem 1.5rem;
+  padding: 0.4rem 0.75rem;
   border: none;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.9rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
   text-align: center;
@@ -224,7 +242,7 @@
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  min-height: 44px;
+  min-height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,7 +256,7 @@
 
 .details-btn:hover {
   background: var(--primary-dark);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -250,7 +268,7 @@
 
 .adopt-btn:hover:not(:disabled) {
   background: var(--secondary-dark);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -269,100 +287,100 @@
 
 .action-btn:hover {
   background: #d97706;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .unified-pet-card {
-    min-height: 480px;
+    min-height: 300px;
   }
   
   .card-image-section {
-    height: 260px;
+    height: 130px;
   }
   
   .card-content {
-    padding: 1.25rem;
+    padding: 0.625rem;
   }
   
   .card-header h3 {
-    font-size: 1.125rem;
+    font-size: 0.9rem;
   }
   
   .pet-details p {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
   }
 }
 
 @media (max-width: 768px) {
   .unified-pet-card {
-    min-height: 450px;
+    min-height: 280px;
   }
   
   .card-image-section {
-    height: 240px;
+    height: 120px;
   }
   
   .card-content {
-    padding: 1rem;
+    padding: 0.5rem;
   }
   
   .card-header {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.4rem;
   }
   
   .card-header h3 {
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
   
   .pet-details p {
-    font-size: 0.8rem;
+    font-size: 0.65rem;
   }
   
   .details-btn,
   .adopt-btn,
   .action-btn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.85rem;
-    min-height: 40px;
+    padding: 0.35rem 0.625rem;
+    font-size: 0.7rem;
+    min-height: 24px;
   }
 }
 
 @media (max-width: 480px) {
   .unified-pet-card {
-    min-height: 400px;
+    min-height: 260px;
   }
   
   .card-image-section {
-    height: 220px;
+    height: 110px;
   }
   
   .card-content {
-    padding: 1rem;
+    padding: 0.5rem;
   }
   
   .card-header h3 {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   
   .pet-details p {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
   }
   
   .details-btn,
   .adopt-btn,
   .action-btn {
-    padding: 0.625rem 1rem;
-    font-size: 0.8rem;
-    min-height: 36px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.65rem;
+    min-height: 22px;
   }
   
   .card-actions {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 }
 

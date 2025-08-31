@@ -2,14 +2,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   background: #1a202c;
   color: white;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: var(--shadow-lg);
-  min-height: 70px;
+  min-height: 50px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -25,7 +25,7 @@
 .navbar-logo a {
   color: white;
   text-decoration: none;
-  font-size: 2.5rem;
+  font-size: 1.25rem;
   font-weight: 800;
   transition: var(--transition);
   letter-spacing: -1px;
@@ -39,16 +39,16 @@
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .navbar-links a {
   color: white;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
   transition: var(--transition);
-  padding: 0.75rem 1.25rem;
+  padding: 0.4rem 0.75rem;
   border-radius: var(--border-radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -57,7 +57,7 @@
 .navbar-links a:hover {
   background: rgba(255, 255, 255, 0.1);
   color: var(--primary-color);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -83,8 +83,8 @@
 .profile-btn {
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 1rem;
-  padding: 0.75rem 1.25rem;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
   border-radius: var(--border-radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;

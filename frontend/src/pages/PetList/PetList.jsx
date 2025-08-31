@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getAllPets } from '../../api';
-import UnifiedPetCard from '../../components/UnifiedPetCard/UnifiedPetCard';
 import { showError } from '../../utils/toast';
+import ImageCarousel from '../../components/ImageCarousel/ImageCarousel';
 import './PetList.css';
 
 const PetList = () => {
@@ -150,13 +150,36 @@ const PetList = () => {
             </div>
           ) : (
             filteredPets.map((pet) => (
-              <UnifiedPetCard
-                key={pet._id}
-                pet={pet}
-                mode="pet"
-                showAdoptButton={true}
-                onAdoptClick={() => handleAdoptClick(pet._id)}
-              />
+              <div key={pet._id} className="pet-item">
+                <div className="pet-image-container">
+                  <ImageCarousel 
+                    images={pet.images || []}
+                    petName={pet.name}
+                    className="pet-carousel"
+                  />
+                </div>
+                <div className="pet-info">
+                  <h3 className="pet-name">{pet.name}</h3>
+                  <div>
+                    <p><strong>Species:</strong> {pet.species}</p>
+                    <p><strong>Breed:</strong> {pet.breed || 'Unknown'}</p>
+                    <p><strong>Age:</strong> {pet.age} years</p>
+                    <p><strong>Gender:</strong> {pet.gender}</p>
+                    <p><strong>Size:</strong> {pet.size || 'Unknown'}</p>
+                  </div>
+                  <div className="pet-actions">
+                    <Link to={`/pets/${pet._id}`} className="view-details-btn">
+                      View Details
+                    </Link>
+                    <button 
+                      className="adopt-btn" 
+                      onClick={() => handleAdoptClick(pet._id)}
+                    >
+                      Adopt {pet.name}
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))
           )}
         </div>
