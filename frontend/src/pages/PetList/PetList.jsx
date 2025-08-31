@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getAllPets } from '../../api';
 import { showError } from '../../utils/toast';
-import ImageCarousel from '../../components/ImageCarousel/ImageCarousel';
+import { getFallbackImageUrl, getResponsiveImageUrl } from '../../utils/imageUtils';
 import './PetList.css';
 
 const PetList = () => {
@@ -149,38 +149,51 @@ const PetList = () => {
               <p>No pets found matching your criteria.</p>
             </div>
           ) : (
-            filteredPets.map((pet) => (
-              <div key={pet._id} className="pet-item">
-                <div className="pet-image-container">
-                  <ImageCarousel 
-                    images={pet.images || []}
-                    petName={pet.name}
-                    className="pet-carousel"
-                  />
-                </div>
-                <div className="pet-info">
-                  <h3 className="pet-name">{pet.name}</h3>
-                  <div>
-                    <p><strong>Species:</strong> {pet.species}</p>
-                    <p><strong>Breed:</strong> {pet.breed || 'Unknown'}</p>
-                    <p><strong>Age:</strong> {pet.age} years</p>
-                    <p><strong>Gender:</strong> {pet.gender}</p>
-                    <p><strong>Size:</strong> {pet.size || 'Unknown'}</p>
+            filteredPets.map((pet) => {
+              // Get the first image or fallback
+              const petImages = pet.images || [];
+              const firstImage = petImages.length > 0 ? petImages[0] : null;
+              const imageUrl = firstImage ? 
+                (typeof firstImage === 'string' ? firstImage : firstImage.url || firstImage) : 
+                getFallbackImageUrl('medium');
+
+              return (
+                <div key={pet._id} className="pet-item">
+                  <div className="pet-image-container">
+                    <img 
+                      src={getResponsiveImageUrl(imageUrl, 'medium')}
+                      alt={`${pet.name} - Pet image`}
+                      className="pet-single-image"
+                      onError={(e) => {
+                        e.target.src = getFallbackImageUrl('medium');
+                        e.target.onerror = null;
+                      }}
+                    />
                   </div>
-                  <div className="pet-actions">
-                    <Link to={`/pets/${pet._id}`} className="view-details-btn">
-                      View Details
-                    </Link>
-                    <button 
-                      className="adopt-btn" 
-                      onClick={() => handleAdoptClick(pet._id)}
-                    >
-                      Adopt {pet.name}
-                    </button>
+                  <div className="pet-info">
+                    <h3 className="pet-name">{pet.name}</h3>
+                    <div>
+                      <p><strong>Species:</strong> {pet.species}</p>
+                      <p><strong>Breed:</strong> {pet.breed || 'Unknown'}</p>
+                      <p><strong>Age:</strong> {pet.age} years</p>
+                      <p><strong>Gender:</strong> {pet.gender}</p>
+                      <p><strong>Size:</strong> {pet.size || 'Unknown'}</p>
+                    </div>
+                    <div className="pet-actions">
+                      <Link to={`/pets/${pet._id}`} className="view-details-btn">
+                        View Details
+                      </Link>
+                      <button 
+                        className="adopt-btn" 
+                        onClick={() => handleAdoptClick(pet._id)}
+                      >
+                        Adopt {pet.name}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

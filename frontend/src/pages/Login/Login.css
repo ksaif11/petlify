@@ -34,7 +34,7 @@
 
 .login-container h1 {
   margin-bottom: 2.5rem;
-  font-size: 2rem;
+  font-size: 1.25rem;
   color: var(--text-primary);
   font-weight: 700;
   text-transform: uppercase;
@@ -47,7 +47,7 @@
   margin: 1rem 0;
   border: 2px solid var(--border-color);
   border-radius: var(--border-radius);
-  font-size: 1rem;
+  font-size: 0.8rem;
   transition: var(--transition);
   background: var(--bg-secondary);
   font-weight: 500;
@@ -75,7 +75,7 @@
   color: white;
   border: none;
   border-radius: var(--border-radius);
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
@@ -96,7 +96,7 @@
 
 .login-container p {
   margin-top: 2rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -161,18 +161,18 @@
   }
   
   .login-container h1 {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     margin-bottom: 2rem;
   }
   
   .login-container input {
     padding: 1rem 1.25rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   
   .login-container button {
     padding: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -187,21 +187,21 @@
   }
   
   .login-container h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 1.5rem;
   }
   
   .login-container input {
     padding: 0.875rem 1rem;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
   
   .login-container button {
     padding: 0.875rem;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
   
   .login-container p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 }

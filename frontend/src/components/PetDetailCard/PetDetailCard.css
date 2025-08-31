@@ -26,6 +26,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  padding: 2rem;
 }
 
 /* Info Section */
@@ -39,7 +40,7 @@
 }
 
 .pet-name {
-  font-size: 2.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1e293b;
   margin: 0 0 0.5rem 0;
@@ -61,7 +62,7 @@
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
@@ -89,7 +90,7 @@
 }
 
 .pet-description p {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   line-height: 1.6;
   color: #475569;
   margin: 0;
@@ -101,7 +102,7 @@
 }
 
 .pet-details h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #1e293b;
   margin-bottom: 1rem;
@@ -127,13 +128,13 @@
 .detail-label {
   font-weight: 600;
   color: #64748b;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .detail-value {
   font-weight: 500;
   color: #1e293b;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .detail-value.urgency {
@@ -182,7 +183,7 @@
 }
 
 .special-needs p {
-  font-size: 1rem;
+  font-size: 0.8rem;
   line-height: 1.6;
   color: #92400e;
   margin: 0;
@@ -214,7 +215,7 @@
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .health-item.positive {
@@ -246,12 +247,12 @@
   color: #92400e;
   display: block;
   margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .health-notes-text {
   color: #92400e;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
 }
 
 /* Adoption Info */
@@ -285,7 +286,7 @@
 .adoption-label {
   font-weight: 600;
   color: #64748b;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -293,7 +294,7 @@
 .adoption-value {
   font-weight: 600;
   color: #1e293b;
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-align: right;
   max-width: 60%;
 }
@@ -301,7 +302,7 @@
 .urgency-badge {
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: capitalize;
 }
@@ -336,7 +337,7 @@
   border: none;
   padding: 1rem 2.5rem;
   border-radius: 50px;
-  font-size: 1.125rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -362,7 +363,7 @@
 .already-requested-message {
   margin-top: 1rem;
   color: #6c757d;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-style: italic;
 }
 
@@ -377,7 +378,7 @@
   }
   
   .pet-name {
-    font-size: 2.25rem;
+    font-size: 1.25rem;
   }
   
   .detail-row {
@@ -391,12 +392,17 @@
     padding: 1rem;
   }
   
+  .pet-image-section {
+    min-height: 300px;
+    padding: 1rem;
+  }
+  
   .pet-info-section {
     padding: 1.25rem;
   }
   
   .pet-name {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
   
   .pet-basic-info {
@@ -416,7 +422,7 @@
   }
   
   .pet-description p {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   
   .detail-item {
@@ -429,7 +435,7 @@
   
   .adopt-button {
     padding: 0.875rem 2rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -438,12 +444,17 @@
     padding: 0.75rem;
   }
   
+  .pet-image-section {
+    min-height: 250px;
+    padding: 0.5rem;
+  }
+  
   .pet-info-section {
     padding: 1rem;
   }
   
   .pet-name {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
   }
   
   .pet-basic-info {
@@ -457,7 +468,7 @@
   .pet-gender,
   .pet-size {
     padding: 0.25rem 0.625rem;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
   
   .pet-description {
@@ -465,7 +476,7 @@
   }
   
   .pet-description p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   
   .pet-details h3 {
@@ -487,7 +498,7 @@
   
   .adopt-button {
     padding: 0.75rem 1.75rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   
   .already-requested-message {

@@ -32,13 +32,14 @@
 }
 
 .hero-section p {
-  font-size: 1rem;
+  font-size: 0.8rem;
   margin-bottom: 1.5rem;
   opacity: 0.95;
   line-height: 1.6;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  color: white;
 }
 
 .hero-buttons {
@@ -54,7 +55,7 @@
   background: var(--secondary-color);
   color: white;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   border-radius: 50px;
   transition: var(--transition);
@@ -80,7 +81,6 @@
   color: var(--primary-color);
 }
 
-/* Container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -89,14 +89,13 @@
   box-sizing: border-box;
 }
 
-/* Featured Pets Section */
 .featured-pets-section {
   padding: 3rem 0;
   background: var(--bg-primary);
 }
 
 .featured-pets-section h2 {
-  font-size: 1.5rem;
+  font-size: 2.3rem;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
   font-weight: 600;
@@ -106,7 +105,7 @@
 }
 
 .featured-pets-section > .container > p {
-  font-size: 0.9rem;
+  font-size:1rem;
   color: var(--text-secondary);
   max-width: 500px;
   margin: 0 auto 2rem auto;
@@ -118,7 +117,7 @@
   text-align: center;
   padding: 2rem 0;
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 .featured-pets-grid {
@@ -167,7 +166,7 @@
 }
 
 .pet-info h3 {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
@@ -178,7 +177,7 @@
 .pet-info p {
   color: var(--text-secondary);
   margin-bottom: 0.4rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.5;
   text-align: center;
@@ -187,7 +186,7 @@
 .pet-info p:first-of-type {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   margin-bottom: 0.3rem;
 }
 
@@ -232,7 +231,7 @@
   border-radius: 6px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: var(--transition);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -252,7 +251,7 @@
 }
 
 .testimonials-section h2 {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   color: var(--text-primary);
   margin-bottom: 3rem;
   text-align: center;
@@ -282,11 +281,10 @@
 }
 
 .testimonial-content p {
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 1.5rem;
   line-height: 1.6;
-  font-style: italic;
 }
 
 .testimonial-author {
@@ -297,16 +295,15 @@
 
 .testimonial-author strong {
   color: var(--text-primary);
-  font-size: 1.125rem;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
 .testimonial-author span {
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 0.8rem;
 }
 
-/* CTA Section */
 .cta-section {
   padding: 5rem 0;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
@@ -315,7 +312,7 @@
 }
 
 .cta-section h2 {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   margin-bottom: 1rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -323,13 +320,14 @@
 }
 
 .cta-section p {
-  font-size: 1.25rem;
+  font-size: 0.8rem;
   margin-bottom: 2.5rem;
   opacity: 0.95;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.6;
+  color: white;
 }
 
 .cta-buttons {
@@ -342,11 +340,11 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-section h1 {
-    font-size: 2.5rem;
+    font-size: 1.25rem;
   }
   
   .hero-section p {
-    font-size: 1.125rem;
+    font-size: 0.8rem;
   }
   
   .featured-pets-grid {
@@ -360,11 +358,11 @@
   }
   
   .cta-section h2 {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
   
   .cta-section p {
-    font-size: 1.125rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -374,11 +372,11 @@
   }
   
   .hero-section h1 {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
   
   .hero-section p {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   
   .hero-buttons {
@@ -405,11 +403,11 @@
   }
   
   .cta-section h2 {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
   }
   
   .cta-section p {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   
   .cta-buttons {

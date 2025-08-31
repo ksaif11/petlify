@@ -9,7 +9,7 @@
   top: 0;
   z-index: 1000;
   box-shadow: var(--shadow-lg);
-  min-height: 50px;
+  min-height: 80px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -25,7 +25,7 @@
 .navbar-logo a {
   color: white;
   text-decoration: none;
-  font-size: 1.25rem;
+  font-size: 2rem;
   font-weight: 800;
   transition: var(--transition);
   letter-spacing: -1px;

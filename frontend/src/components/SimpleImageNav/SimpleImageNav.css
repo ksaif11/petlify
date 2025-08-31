@@ -58,11 +58,11 @@
   transform: translateY(-50%) scale(0.95);
 }
 
-.nav-arrow-left {
+.prev-arrow {
   left: 16px;
 }
 
-.nav-arrow-right {
+.next-arrow {
   right: 16px;
 }
 
@@ -81,7 +81,7 @@
 }
 
 /* Error Indicator */
-.image-error-indicator {
+.error-indicator {
   position: absolute;
   top: 16px;
   left: 16px;
@@ -106,16 +106,16 @@
     font-size: 20px;
   }
   
-  .nav-arrow-left {
+  .prev-arrow {
     left: 12px;
   }
   
-  .nav-arrow-right {
+  .next-arrow {
     right: 12px;
   }
   
   .image-counter,
-  .image-error-indicator {
+  .error-indicator {
     font-size: 12px;
     padding: 6px 10px;
   }

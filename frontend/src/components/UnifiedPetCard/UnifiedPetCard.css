@@ -108,7 +108,7 @@
 .status-badge {
   padding: 0.15rem 0.5rem;
   border-radius: 12px;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -150,7 +150,7 @@
 }
 
 .card-header h3 {
-  font-size: 0.95rem;
+  font-size: 1.25rem;
   color: var(--text-primary);
   font-weight: 700;
   margin: 0;
@@ -166,7 +166,7 @@
 
 .pet-details p {
   margin-bottom: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1.4;
   color: var(--text-secondary);
   font-weight: 500;
@@ -182,7 +182,7 @@
   color: var(--text-primary);
   font-weight: 600;
   text-transform: capitalize;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   display: inline-block;
   margin-right: 0.5rem;
 }
@@ -197,7 +197,7 @@
 
 .user-info p {
   margin-bottom: 0.2rem;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
@@ -215,7 +215,7 @@
 
 .request-date p {
   margin: 0;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -234,7 +234,7 @@
   padding: 0.4rem 0.75rem;
   border: none;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
   text-align: center;
@@ -306,11 +306,11 @@
   }
   
   .card-header h3 {
-    font-size: 0.9rem;
+    font-size: 1.25rem;
   }
   
   .pet-details p {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -333,18 +333,18 @@
   }
   
   .card-header h3 {
-    font-size: 0.85rem;
+    font-size: 1.25rem;
   }
   
   .pet-details p {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
   }
   
   .details-btn,
   .adopt-btn,
   .action-btn {
     padding: 0.35rem 0.625rem;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     min-height: 24px;
   }
 }
@@ -363,18 +363,18 @@
   }
   
   .card-header h3 {
-    font-size: 0.8rem;
+    font-size: 1.25rem;
   }
   
   .pet-details p {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
   }
   
   .details-btn,
   .adopt-btn,
   .action-btn {
     padding: 0.3rem 0.5rem;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     min-height: 22px;
   }
   
