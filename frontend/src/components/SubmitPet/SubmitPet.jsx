@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { submitPet } from "../../api"
-import { showError, showSuccess, showWarning } from "../../utils/toast";
-import { 
-  validateRequired, 
-  validateAge, 
-  validateWeight, 
-  validatePhone, 
-  validateZipCode, 
-  validateMultipleFiles 
+import { showError, showSuccess } from "../../utils/toast";
+import {
+  validateRequired,
+  validateAge,
+  validateWeight,
+  validatePhone,
+  validateZipCode,
+  validateMultipleFiles
 } from "../../utils/validation";
 import "./SubmitPet.css";
 
@@ -19,7 +19,6 @@ const SubmitPet = () => {
     breed: "",
     age: "",
     description: "",
-    
     gender: "",
     size: "",
     color: "",
@@ -32,7 +31,7 @@ const SubmitPet = () => {
     temperament: "",
     goodWith: [],
     energyLevel: "",
-    
+
     ownerMobile: "",
     ownerAddress: "",
     ownerCity: "",
@@ -41,7 +40,7 @@ const SubmitPet = () => {
     reasonForRehoming: "",
     rehomingUrgency: "",
   });
-  
+
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -49,19 +48,38 @@ const SubmitPet = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Cleanup object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach(preview => {
+        if (preview) {
+          URL.revokeObjectURL(preview);
+        }
+      });
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
   };
 
   const handleGoodWithChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      goodWith: checked 
+      goodWith: checked
         ? [...prev.goodWith, value]
         : prev.goodWith.filter(item => item !== value)
     }));
@@ -69,108 +87,196 @@ const SubmitPet = () => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    
-    if (!validateMultipleFiles(files)) {
-      showError("Please select 1-5 images, each under 5MB");
+
+    // Clear previous validation errors
+    if (errors.images) {
+      setErrors(prev => ({
+        ...prev,
+        images: ""
+      }));
+    }
+
+    const validation = validateMultipleFiles(files);
+    if (!validation.isValid) {
+      showError(validation.message);
+      // Clear the file input
+      e.target.value = '';
       return;
     }
 
     setImages(files);
+
+    const previews = files.map(file => {
+      try {
+        return URL.createObjectURL(file);
+      } catch (error) {
+        console.error('Error creating preview URL:', error);
+        return null;
+      }
+    }).filter(preview => preview !== null);
     
-    const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
   };
 
   const removeImage = (index) => {
+    // Revoke the object URL to free memory
+    if (imagePreviews[index]) {
+      URL.revokeObjectURL(imagePreviews[index]);
+    }
+    
     const newImages = images.filter((_, i) => i !== index);
     const newPreviews = imagePreviews.filter((_, i) => i !== index);
-    
+
     setImages(newImages);
     setImagePreviews(newPreviews);
+  };
+
+  const isStepValid = (step) => {
+    const stepErrors = {};
+
+    switch (step) {
+      case 1:
+        if (!formData.name?.trim()) stepErrors.name = "Pet name is required";
+        if (!formData.species?.trim()) stepErrors.species = "Species is required";
+        if (!formData.breed?.trim()) stepErrors.breed = "Breed is required";
+        if (!formData.age || parseFloat(formData.age) <= 0) stepErrors.age = "Valid age is required";
+        if (!formData.description?.trim()) stepErrors.description = "Description is required";
+        break;
+
+      case 2:
+        if (!formData.gender?.trim()) stepErrors.gender = "Gender is required";
+        if (!formData.size?.trim()) stepErrors.size = "Size is required";
+        if (!formData.color?.trim()) stepErrors.color = "Color is required";
+        if (!formData.isVaccinated?.trim()) stepErrors.isVaccinated = "Vaccination status is required";
+        if (!formData.isNeutered?.trim()) stepErrors.isNeutered = "Neutering status is required";
+        if (!formData.isHouseTrained?.trim()) stepErrors.isHouseTrained = "House training status is required";
+        break;
+
+      case 3:
+        if (!formData.temperament?.trim()) stepErrors.temperament = "Temperament is required";
+        if (!formData.energyLevel?.trim()) stepErrors.energyLevel = "Energy level is required";
+        break;
+
+      case 4:
+        if (!formData.ownerMobile?.trim()) stepErrors.ownerMobile = "Phone number is required";
+        if (!formData.ownerAddress?.trim()) stepErrors.ownerAddress = "Address is required";
+        if (!formData.ownerCity?.trim()) stepErrors.ownerCity = "City is required";
+        if (!formData.ownerState?.trim()) stepErrors.ownerState = "State is required";
+        if (!formData.ownerZipCode?.trim()) stepErrors.ownerZipCode = "ZIP code is required";
+        if (!formData.reasonForRehoming?.trim()) stepErrors.reasonForRehoming = "Reason for rehoming is required";
+        if (!formData.rehomingUrgency?.trim()) stepErrors.rehomingUrgency = "Rehoming urgency is required";
+        if (images.length === 0) stepErrors.images = "At least one image is required";
+        break;
+    }
+
+    return Object.keys(stepErrors).length === 0;
   };
 
   const validateStep = (step) => {
     const newErrors = {};
 
+    // Clear all errors first
+    setErrors({});
+
     switch (step) {
       case 1:
-        if (!validateRequired(formData.name)) {
-          newErrors.name = "Pet name is required";
+        const nameValidation = validateRequired(formData.name, 'Pet name');
+        if (!nameValidation.isValid) {
+          newErrors.name = nameValidation.message;
         }
-        if (!validateRequired(formData.species)) {
-          newErrors.species = "Species is required";
+        const speciesValidation = validateRequired(formData.species, 'Species');
+        if (!speciesValidation.isValid) {
+          newErrors.species = speciesValidation.message;
         }
-        if (!validateRequired(formData.breed)) {
-          newErrors.breed = "Breed is required";
+        const breedValidation = validateRequired(formData.breed, 'Breed');
+        if (!breedValidation.isValid) {
+          newErrors.breed = breedValidation.message;
         }
-        if (!validateAge(formData.age)) {
-          newErrors.age = "Valid age is required";
+        const ageValidation = validateAge(formData.age);
+        if (!ageValidation.isValid) {
+          newErrors.age = ageValidation.message;
         }
-        if (!validateRequired(formData.description)) {
-          newErrors.description = "Description is required";
+        const descriptionValidation = validateRequired(formData.description, 'Description');
+        if (!descriptionValidation.isValid) {
+          newErrors.description = descriptionValidation.message;
         }
         break;
 
       case 2:
-        if (!validateRequired(formData.gender)) {
-          newErrors.gender = "Gender is required";
+        const genderValidation = validateRequired(formData.gender, 'Gender');
+        if (!genderValidation.isValid) {
+          newErrors.gender = genderValidation.message;
         }
-        if (!validateRequired(formData.size)) {
-          newErrors.size = "Size is required";
+        const sizeValidation = validateRequired(formData.size, 'Size');
+        if (!sizeValidation.isValid) {
+          newErrors.size = sizeValidation.message;
         }
-        if (!validateRequired(formData.color)) {
-          newErrors.color = "Color is required";
+        const colorValidation = validateRequired(formData.color, 'Color');
+        if (!colorValidation.isValid) {
+          newErrors.color = colorValidation.message;
         }
-        if (!validateWeight(formData.weight)) {
-          newErrors.weight = "Valid weight is required";
+        const weightValidation = validateWeight(formData.weight);
+        if (!weightValidation.isValid) {
+          newErrors.weight = weightValidation.message;
         }
-        if (!validateRequired(formData.isVaccinated)) {
-          newErrors.isVaccinated = "Vaccination status is required";
+        const vaccinatedValidation = validateRequired(formData.isVaccinated, 'Vaccination status');
+        if (!vaccinatedValidation.isValid) {
+          newErrors.isVaccinated = vaccinatedValidation.message;
         }
-        if (!validateRequired(formData.isNeutered)) {
-          newErrors.isNeutered = "Neutering status is required";
+        const neuteredValidation = validateRequired(formData.isNeutered, 'Neutering status');
+        if (!neuteredValidation.isValid) {
+          newErrors.isNeutered = neuteredValidation.message;
         }
-        if (!validateRequired(formData.isHouseTrained)) {
-          newErrors.isHouseTrained = "House training status is required";
+        const houseTrainedValidation = validateRequired(formData.isHouseTrained, 'House training status');
+        if (!houseTrainedValidation.isValid) {
+          newErrors.isHouseTrained = houseTrainedValidation.message;
         }
         break;
 
       case 3:
-        if (!validateRequired(formData.temperament)) {
-          newErrors.temperament = "Temperament is required";
+        const temperamentValidation = validateRequired(formData.temperament, 'Temperament');
+        if (!temperamentValidation.isValid) {
+          newErrors.temperament = temperamentValidation.message;
         }
-        if (!validateRequired(formData.energyLevel)) {
-          newErrors.energyLevel = "Energy level is required";
-        }
-        if (formData.healthIssues && formData.healthIssues.trim().length < 10) {
-          newErrors.healthIssues = "Health issues description should be at least 10 characters";
-        }
-        if (formData.specialNeeds && formData.specialNeeds.trim().length < 10) {
-          newErrors.specialNeeds = "Special needs description should be at least 10 characters";
+        const energyLevelValidation = validateRequired(formData.energyLevel, 'Energy level');
+        if (!energyLevelValidation.isValid) {
+          newErrors.energyLevel = energyLevelValidation.message;
         }
         break;
 
       case 4:
-        if (!validatePhone(formData.ownerMobile)) {
-          newErrors.ownerMobile = "Valid phone number is required";
+        const phoneValidation = validatePhone(formData.ownerMobile);
+        if (!phoneValidation.isValid) {
+          newErrors.ownerMobile = phoneValidation.message;
         }
-        if (!validateRequired(formData.ownerAddress)) {
-          newErrors.ownerAddress = "Address is required";
+        const addressValidation = validateRequired(formData.ownerAddress, 'Address');
+        if (!addressValidation.isValid) {
+          newErrors.ownerAddress = addressValidation.message;
         }
-        if (!validateRequired(formData.ownerCity)) {
-          newErrors.ownerCity = "City is required";
+        const cityValidation = validateRequired(formData.ownerCity, 'City');
+        if (!cityValidation.isValid) {
+          newErrors.ownerCity = cityValidation.message;
         }
-        if (!validateRequired(formData.ownerState)) {
-          newErrors.ownerState = "State is required";
+        const stateValidation = validateRequired(formData.ownerState, 'State');
+        if (!stateValidation.isValid) {
+          newErrors.ownerState = stateValidation.message;
         }
-        if (!validateZipCode(formData.ownerZipCode)) {
-          newErrors.ownerZipCode = "Valid zip code is required";
+        const zipCodeValidation = validateZipCode(formData.ownerZipCode);
+        if (!zipCodeValidation.isValid) {
+          newErrors.ownerZipCode = zipCodeValidation.message;
         }
-        if (!validateRequired(formData.reasonForRehoming)) {
-          newErrors.reasonForRehoming = "Reason for rehoming is required";
+        const reasonValidation = validateRequired(formData.reasonForRehoming, 'Reason for rehoming');
+        if (!reasonValidation.isValid) {
+          newErrors.reasonForRehoming = reasonValidation.message;
         }
-        if (!validateRequired(formData.rehomingUrgency)) {
-          newErrors.rehomingUrgency = "Rehoming urgency is required";
+        const urgencyValidation = validateRequired(formData.rehomingUrgency, 'Rehoming urgency');
+        if (!urgencyValidation.isValid) {
+          newErrors.rehomingUrgency = urgencyValidation.message;
+        }
+        
+        // Validate images
+        if (images.length === 0) {
+          newErrors.images = "At least one image is required";
         }
         break;
     }
@@ -191,21 +297,26 @@ const SubmitPet = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateStep(currentStep)) {
-      return;
+
+    // Validate all steps before submission
+    for (let step = 1; step <= 4; step++) {
+      if (!validateStep(step)) {
+        setCurrentStep(step);
+        return;
+      }
     }
 
     if (images.length === 0) {
-      showError("Please upload at least one image of your pet");
+      setErrors(prev => ({ ...prev, images: "Please upload at least one image of your pet" }));
+      setCurrentStep(4);
       return;
     }
 
     setLoading(true);
-    
+
     try {
       const formDataToSend = new FormData();
-      
+
       Object.keys(formData).forEach(key => {
         if (key === 'goodWith') {
           formDataToSend.append(key, JSON.stringify(formData[key]));
@@ -213,13 +324,13 @@ const SubmitPet = () => {
           formDataToSend.append(key, formData[key]);
         }
       });
-      
+
       images.forEach(image => {
         formDataToSend.append('images', image);
       });
 
       await submitPet(formDataToSend);
-      
+
       showSuccess("Pet submitted successfully! It will be reviewed by our team.");
       navigate("/pets");
     } catch (error) {
@@ -234,24 +345,24 @@ const SubmitPet = () => {
       <div className="container">
         <div className="submit-header">
           <h1>Submit a Pet for Adoption</h1>
-          <p>Help find a loving home for a pet in need</p>
+          <p>Help find a loving home for a pet in need, Submit pet for adoption today.</p>
         </div>
 
         <div className="step-indicator">
           <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>
-            <span className="step-number">1</span>
+            <span className="step-number">1-</span>
             <span className="step-label">Basic Info</span>
           </div>
           <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>
-            <span className="step-number">2</span>
+            <span className="step-number">2-</span>
             <span className="step-label">Details</span>
           </div>
           <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>
-            <span className="step-number">3</span>
+            <span className="step-number">3-</span>
             <span className="step-label">Behavior</span>
           </div>
           <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>
-            <span className="step-number">4</span>
+            <span className="step-number">4-</span>
             <span className="step-label">Contact</span>
           </div>
         </div>
@@ -260,7 +371,7 @@ const SubmitPet = () => {
           {currentStep === 1 && (
             <div className="form-step">
               <h2>Basic Information</h2>
-              
+
               <div className="form-group">
                 <label htmlFor="name">Pet Name *</label>
                 <input
@@ -269,6 +380,7 @@ const SubmitPet = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder="Enter your pet's name"
                   className={errors.name ? 'error' : ''}
                 />
                 {errors.name && <span className="error-message">{errors.name}</span>}
@@ -303,7 +415,7 @@ const SubmitPet = () => {
                     name="breed"
                     value={formData.breed}
                     onChange={handleChange}
-                    placeholder="e.g., Golden Retriever, Persian"
+                    placeholder="Enter the breed (e.g., Golden Retriever, Persian, Mixed)"
                     className={errors.breed ? 'error' : ''}
                   />
                   {errors.breed && <span className="error-message">{errors.breed}</span>}
@@ -328,7 +440,7 @@ const SubmitPet = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="weight">Weight (kg) *</label>
+                  <label htmlFor="weight">Weight (kg)</label>
                   <input
                     type="number"
                     id="weight"
@@ -351,7 +463,7 @@ const SubmitPet = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Tell us about your pet's personality, likes, dislikes, etc."
+                  placeholder="Describe your pet's personality, behavior, likes, dislikes, and any special characteristics"
                   rows="4"
                   className={errors.description ? 'error' : ''}
                 />
@@ -363,7 +475,7 @@ const SubmitPet = () => {
           {currentStep === 2 && (
             <div className="form-step">
               <h2>Physical Details</h2>
-              
+
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="gender">Gender *</label>
@@ -407,7 +519,7 @@ const SubmitPet = () => {
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
-                  placeholder="e.g., Black and white, Golden brown"
+                  placeholder="Describe the pet's color and markings (e.g., Black and white, Golden brown, Tabby)"
                   className={errors.color ? 'error' : ''}
                 />
                 {errors.color && <span className="error-message">{errors.color}</span>}
@@ -473,7 +585,7 @@ const SubmitPet = () => {
                   name="healthIssues"
                   value={formData.healthIssues}
                   onChange={handleChange}
-                  placeholder="Describe any health issues or medical conditions"
+                  placeholder="List any health issues, medical conditions, or medications (leave blank if none)"
                   rows="3"
                   className={errors.healthIssues ? 'error' : ''}
                 />
@@ -487,7 +599,7 @@ const SubmitPet = () => {
                   name="specialNeeds"
                   value={formData.specialNeeds}
                   onChange={handleChange}
-                  placeholder="Describe any special needs or accommodations required"
+                  placeholder="Describe any special needs, dietary requirements, or accommodations needed (leave blank if none)"
                   rows="3"
                   className={errors.specialNeeds ? 'error' : ''}
                 />
@@ -499,7 +611,7 @@ const SubmitPet = () => {
           {currentStep === 3 && (
             <div className="form-step">
               <h2>Behavior & Compatibility</h2>
-              
+
               <div className="form-group">
                 <label htmlFor="temperament">Temperament *</label>
                 <select
@@ -538,53 +650,58 @@ const SubmitPet = () => {
               </div>
 
               <div className="form-group">
-                <label>Good with: (select all that apply)</label>
+                <label>Good With (Select all that apply) <span className="optional">(Optional)</span></label>
                 <div className="checkbox-group">
-                  <label>
+                  <label className="checkbox-label">
                     <input
                       type="checkbox"
+                      name="goodWith"
                       value="Children"
-                      checked={formData.goodWith.includes("Children")}
+                      checked={formData.goodWith.includes('Children')}
                       onChange={handleGoodWithChange}
                     />
                     Children
                   </label>
-                  <label>
+                  <label className="checkbox-label">
                     <input
                       type="checkbox"
+                      name="goodWith"
                       value="Dogs"
-                      checked={formData.goodWith.includes("Dogs")}
+                      checked={formData.goodWith.includes('Dogs')}
                       onChange={handleGoodWithChange}
                     />
                     Dogs
                   </label>
-                  <label>
+                  <label className="checkbox-label">
                     <input
                       type="checkbox"
+                      name="goodWith"
                       value="Cats"
-                      checked={formData.goodWith.includes("Cats")}
+                      checked={formData.goodWith.includes('Cats')}
                       onChange={handleGoodWithChange}
                     />
                     Cats
                   </label>
-                  <label>
+                  <label className="checkbox-label">
                     <input
                       type="checkbox"
+                      name="goodWith"
                       value="Other Pets"
-                      checked={formData.goodWith.includes("Other Pets")}
+                      checked={formData.goodWith.includes('Other Pets')}
                       onChange={handleGoodWithChange}
                     />
                     Other Pets
                   </label>
                 </div>
               </div>
+
             </div>
           )}
 
           {currentStep === 4 && (
             <div className="form-step">
               <h2>Contact Information & Rehoming Details</h2>
-              
+
               <div className="form-group">
                 <label htmlFor="ownerMobile">Your Phone Number *</label>
                 <input
@@ -593,7 +710,7 @@ const SubmitPet = () => {
                   name="ownerMobile"
                   value={formData.ownerMobile}
                   onChange={handleChange}
-                  placeholder="e.g., (555) 123-4567"
+                  placeholder="Enter your phone number (e.g., (555) 123-4567)"
                   className={errors.ownerMobile ? 'error' : ''}
                 />
                 {errors.ownerMobile && <span className="error-message">{errors.ownerMobile}</span>}
@@ -607,7 +724,7 @@ const SubmitPet = () => {
                   name="ownerAddress"
                   value={formData.ownerAddress}
                   onChange={handleChange}
-                  placeholder="Street address"
+                  placeholder="Enter your complete street address"
                   className={errors.ownerAddress ? 'error' : ''}
                 />
                 {errors.ownerAddress && <span className="error-message">{errors.ownerAddress}</span>}
@@ -622,6 +739,7 @@ const SubmitPet = () => {
                     name="ownerCity"
                     value={formData.ownerCity}
                     onChange={handleChange}
+                    placeholder="Enter your city"
                     className={errors.ownerCity ? 'error' : ''}
                   />
                   {errors.ownerCity && <span className="error-message">{errors.ownerCity}</span>}
@@ -635,6 +753,7 @@ const SubmitPet = () => {
                     name="ownerState"
                     value={formData.ownerState}
                     onChange={handleChange}
+                    placeholder="Enter your state"
                     className={errors.ownerState ? 'error' : ''}
                   />
                   {errors.ownerState && <span className="error-message">{errors.ownerState}</span>}
@@ -648,10 +767,12 @@ const SubmitPet = () => {
                     name="ownerZipCode"
                     value={formData.ownerZipCode}
                     onChange={handleChange}
-                    placeholder="e.g., 12345"
+                    placeholder="Enter your postal/ZIP code (e.g., 12345, A1A 1A1, SW1A 1AA)"
                     className={errors.ownerZipCode ? 'error' : ''}
+                    maxLength="10"
                   />
                   {errors.ownerZipCode && <span className="error-message">{errors.ownerZipCode}</span>}
+                  <small className="field-help">Supports US, Canadian, UK, and international postal codes</small>
                 </div>
               </div>
 
@@ -662,7 +783,7 @@ const SubmitPet = () => {
                   name="reasonForRehoming"
                   value={formData.reasonForRehoming}
                   onChange={handleChange}
-                  placeholder="Why are you looking to rehome this pet?"
+                  placeholder="Please explain why you need to rehome this pet (e.g., moving, allergies, time constraints)"
                   rows="3"
                   className={errors.reasonForRehoming ? 'error' : ''}
                 />
@@ -689,32 +810,56 @@ const SubmitPet = () => {
 
               <div className="form-group">
                 <label htmlFor="images">Pet Images *</label>
-                <input
-                  type="file"
-                  id="images"
-                  name="images"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="file-input"
-                />
-                <p className="file-help">Upload 1-5 images (max 5MB each)</p>
-                
+                <div className="file-input-wrapper">
+                  <input
+                    type="file"
+                    id="images"
+                    name="images"
+                    multiple
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className={`file-input ${errors.images ? 'error' : ''}`}
+                  />
+                  <label htmlFor="images" className={`file-input-label ${errors.images ? 'error' : ''}`}>
+                    <span className="file-input-icon">📷</span>
+                    <span className="file-input-text">
+                      {imagePreviews.length > 0 
+                        ? `${imagePreviews.length} image(s) selected` 
+                        : 'Choose images to upload'
+                      }
+                    </span>
+                  </label>
+                </div>
+                <p className="file-help">Upload 1-5 images (max 5MB each). Supported formats: JPEG, PNG, GIF, WebP</p>
+                {errors.images && <span className="error-message">{errors.images}</span>}
+
                 {imagePreviews.length > 0 && (
                   <div className="image-previews">
                     {imagePreviews.map((preview, index) => (
                       <div key={index} className="image-preview">
-                        <img src={preview} alt={`Preview ${index + 1}`} />
+                        <img 
+                          src={preview || null} 
+                          alt={`Preview ${index + 1}`}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            console.error('Failed to load image preview:', preview);
+                          }}
+                        />
                         <button
                           type="button"
                           onClick={() => removeImage(index)}
                           className="remove-image"
+                          aria-label="Remove image"
                         >
                           ×
                         </button>
                       </div>
                     ))}
                   </div>
+                )}
+                
+                {imagePreviews.length === 0 && (
+                  <p className="no-images-message">No images selected. Please upload at least one image of your pet.</p>
                 )}
               </div>
             </div>
@@ -726,13 +871,22 @@ const SubmitPet = () => {
                 Previous
               </button>
             )}
-            
+
             {currentStep < 4 ? (
-              <button type="button" onClick={nextStep} className="nav-btn next-btn">
+              <button 
+                type="button" 
+                onClick={nextStep} 
+                className={`nav-btn next-btn ${!isStepValid(currentStep) ? 'disabled' : ''}`}
+                disabled={!isStepValid(currentStep)}
+              >
                 Next
               </button>
             ) : (
-              <button type="submit" disabled={loading} className="submit-btn">
+              <button 
+                type="submit" 
+                disabled={loading || !isStepValid(currentStep)} 
+                className={`submit-btn ${!isStepValid(currentStep) ? 'disabled' : ''}`}
+              >
                 {loading ? "Submitting..." : "Submit Pet"}
               </button>
             )}

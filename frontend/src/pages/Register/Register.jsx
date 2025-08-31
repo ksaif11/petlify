@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { register } from '../../api';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/Navbar';
 import { showError, showSuccess } from '../../utils/toast';
 import { validateEmail, validatePassword, validateRequired } from '../../utils/validation';
 import './Register.css';
@@ -63,7 +62,7 @@ const Register = () => {
           <div className="input-group">
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Enter your full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className={errors.name ? 'error' : ''}
@@ -74,7 +73,7 @@ const Register = () => {
           <div className="input-group">
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={errors.email ? 'error' : ''}
@@ -85,7 +84,7 @@ const Register = () => {
           <div className="input-group">
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Create a password (min 6 characters)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={errors.password ? 'error' : ''}

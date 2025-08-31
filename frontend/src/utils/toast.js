@@ -36,10 +36,7 @@ export const showError = (message) => {
   });
 };
 
-// Info toast
-export const showInfo = (message) => {
-  toast(message, toastConfig);
-};
+
 
 // Warning toast
 export const showWarning = (message) => {
@@ -52,12 +49,4 @@ export const showWarning = (message) => {
   });
 };
 
-// Loading toast
-export const showLoading = (message) => {
-  return toast.loading(message, toastConfig);
-};
 
-// Dismiss toast
-export const dismissToast = (toastId) => {
-  toast.dismiss(toastId);
-};

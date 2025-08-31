@@ -12,8 +12,6 @@ import MyAdoptions from './pages/MyAdoptions/MyAdoptions';
 import SubmitPet from './components/SubmitPet/SubmitPet';
 import OnlyAdmin from './pages/OnlyAdmin/OnlyAdmin';
 import Organization from './pages/Organization/Organization';
-import ToastTest from './components/ToastTest/ToastTest';
-
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import './styles/global.css';
 import Footer from './pages/Home/Footer';
@@ -28,14 +26,40 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/pets/all" element={<PetList />} />
+            <Route path="/pets" element={<PetList />} />
             <Route path="/pets/:id" element={<PetDetail />} />
-            <Route path="/adopt/:petId" element={<AdoptionRequest />} />
-            <Route path="/my-adoptions" element={<MyAdoptions />} />
-            <Route path="/submit-pet" element={<SubmitPet />} />
-            <Route path="/only-admin" element={<OnlyAdmin />} />
-            <Route path="/toast-test" element={<ToastTest />} />
-
+            <Route 
+              path="/adopt/:petId" 
+              element={
+                <ProtectedRoute>
+                  <AdoptionRequest />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/my-adoptions" 
+              element={
+                <ProtectedRoute>
+                  <MyAdoptions />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/submit-pet" 
+              element={
+                <ProtectedRoute>
+                  <SubmitPet />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/only-admin" 
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <OnlyAdmin />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/organization" 
               element={

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAllPets } from '../../api';
 import UnifiedPetCard from '../../components/UnifiedPetCard/UnifiedPetCard';
+import { showError } from '../../utils/toast';
 import './PetList.css';
 
 const PetList = () => {
@@ -8,6 +10,7 @@ const PetList = () => {
   const [filteredPets, setFilteredPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSpecies, setSelectedSpecies] = useState("all");
@@ -63,6 +66,16 @@ const PetList = () => {
 
   const speciesOptions = [...new Set(pets.map(pet => pet.species))];
 
+  const handleAdoptClick = (petId) => {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      showError("Please login to adopt a pet.");
+      navigate("/login");
+      return;
+    }
+    navigate(`/adopt/${petId}`);
+  };
+
   if (loading) {
     return (
       <div className="pet-list-page">
@@ -91,10 +104,12 @@ const PetList = () => {
     <div className="pet-list-page">
       <div className="container">
         <div className="filters-section">
+          <h2 className="filters-title">Find Your Perfect Companion</h2>
+          <p className="filters-subtitle">Search and filter through our available pets to find your ideal match</p>
           <div className="search-filter">
             <input
               type="text"
-              placeholder="Search pets..."
+              placeholder="Search by pet name, breed, or species..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -107,7 +122,7 @@ const PetList = () => {
               onChange={(e) => setSelectedSpecies(e.target.value)}
               className="filter-select"
             >
-              <option value="all">All Species</option>
+              <option value="all">All Species - Choose a pet type</option>
               {speciesOptions.map((species) => (
                 <option key={species} value={species}>
                   {species}
@@ -120,7 +135,7 @@ const PetList = () => {
               onChange={(e) => setSelectedAge(e.target.value)}
               className="filter-select"
             >
-              <option value="all">All Ages</option>
+              <option value="all">All Ages (Select from the dropdown)</option>
               <option value="young">Young (0-2 years)</option>
               <option value="adult">Adult (3-7 years)</option>
               <option value="senior">Senior (8+ years)</option>
@@ -140,6 +155,7 @@ const PetList = () => {
                 pet={pet}
                 mode="pet"
                 showAdoptButton={true}
+                onAdoptClick={() => handleAdoptClick(pet._id)}
               />
             ))
           )}

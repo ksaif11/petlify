@@ -10,11 +10,11 @@ import { authenticate, requireOrganization } from "../middleware/authMiddleware.
 
 const router = express.Router();
 
-router.post("/submit", authenticate, submitAdoptionRequest);
-router.get("/user", authenticate, getUserAdoptionRequests);
+router.post("/", authenticate, submitAdoptionRequest);
+router.get("/my-requests", authenticate, getUserAdoptionRequests);
 
-router.get("/admin/all", authenticate, requireOrganization, getAllAdoptionRequests);
-router.get("/admin/pending", authenticate, requireOrganization, getPendingAdoptionRequests);
-router.put("/admin/:id/status", authenticate, requireOrganization, updateAdoptionRequestStatus);
+router.get("/all", authenticate, requireOrganization, getAllAdoptionRequests);
+router.get("/pending", authenticate, requireOrganization, getPendingAdoptionRequests);
+router.put("/update-status", authenticate, requireOrganization, updateAdoptionRequestStatus);
 
 export default router;

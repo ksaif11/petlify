@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../../api';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/Navbar';
 import { showError, showSuccess } from '../../utils/toast';
 import { validateEmail, validatePassword } from '../../utils/validation';
 import './Login.css';
@@ -56,7 +55,7 @@ const Login = () => {
           <div className="input-group">
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={errors.email ? 'error' : ''}
@@ -67,7 +66,7 @@ const Login = () => {
           <div className="input-group">
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={errors.password ? 'error' : ''}
@@ -78,7 +77,7 @@ const Login = () => {
           <button type="submit">Login</button>
         </form>
         <p>
-          Don't have an account? <a href="/register">Register here</a>.
+          Don&apos;t have an account? <a href="/register">Register here</a>.
         </p>
       </div>
     </div>

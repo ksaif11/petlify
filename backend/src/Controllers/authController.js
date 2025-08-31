@@ -6,6 +6,11 @@ export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined in environment variables");
+      return res.status(500).json({ message: "Server configuration error" });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists!" });
@@ -15,7 +20,7 @@ export const register = async (req, res) => {
     await user.save();
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, isAdmin: user.isAdmin },
+      { id: user._id, email: user.email, name: user.name, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -34,6 +39,11 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined in environment variables");
+      return res.status(500).json({ message: "Server configuration error" });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials!" });
@@ -45,7 +55,7 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, isAdmin: user.isAdmin },
+      { id: user._id, email: user.email, name: user.name, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );

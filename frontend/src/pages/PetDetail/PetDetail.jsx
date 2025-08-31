@@ -16,18 +16,28 @@ const PetDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setError("");
         const petData = await getPetById(id);
         setPet(petData);
 
         if (loggedIn) {
-          const requests = await getUserAdoptionRequests();
-          setUserRequests(requests);
+          try {
+            const requests = await getUserAdoptionRequests();
+            setUserRequests(requests);
+          } catch (requestError) {
+            console.error('Error fetching user requests:', requestError);
+            // Don't fail the whole component if user requests fail
+          }
         }
       } catch (err) {
-        setError("Failed to load pet details.");
+        console.error('Error fetching pet details:', err);
+        setError(err.userMessage || "Failed to load pet details.");
       }
     };
-    fetchData();
+    
+    if (id) {
+      fetchData();
+    }
   }, [id, loggedIn]);
 
   const hasAlreadyRequested = userRequests.some((req) => req.pet?._id === id);
@@ -35,6 +45,7 @@ const PetDetail = () => {
   const handleAdopt = () => {
     if (!loggedIn) {
       showError("Please login to adopt a pet.");
+      navigate("/login");
       return;
     }
 
@@ -43,8 +54,28 @@ const PetDetail = () => {
       return;
     }
 
+    if (!id) {
+      showError("Pet ID is missing. Please try again.");
+      return;
+    }
+
     navigate(`/adopt/${id}`);
   };
+
+  if (error) {
+    return (
+      <div className="pet-detail-page">
+        <div className="container">
+          <div className="error-container">
+            <p className="error-text">{error}</p>
+            <button onClick={() => navigate('/pets')} className="back-btn">
+              Back to Pets
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!pet) {
     return (

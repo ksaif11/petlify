@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setIsAuthenticated(true);
         setIsAdmin(payload.isAdmin || false);
-      } catch (error) {
+      } catch {
         setIsAuthenticated(false);
         setIsAdmin(false);
       }

@@ -13,7 +13,7 @@ const Home = () => {
       try {
         const pets = await getFeaturedPets();
         setFeaturedPets(pets);
-      } catch (err) {
+      } catch {
         setFeaturedPets([]);
       } finally {
         setLoading(false);
@@ -22,7 +22,7 @@ const Home = () => {
     fetchFeaturedPets();
   }, []);
 
-  const handleImageError = (e, petName) => {
+  const handleImageError = (e) => {
     e.target.src = getFallbackImageUrl('medium');
     e.target.onerror = null;
   };
@@ -92,9 +92,9 @@ const Home = () => {
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>"We found our perfect match through PetLify. The adoption process was smooth and we couldn't be happier!"</p>
+                <p>We found our perfect match through PetLify. The adoption process was smooth and we couldn&apos;t be happier!&quot;</p>
                 <div className="testimonial-author">
-                  <strong>Sarah & Mike</strong>
+                  <strong>Saif, Mumbai, India</strong>
                   <span>Adopted Luna, a 2-year-old Golden Retriever</span>
                 </div>
               </div>
@@ -102,9 +102,9 @@ const Home = () => {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>"PetLify helped us find our furry family member. The platform made it easy to connect with pet owners."</p>
+                <p>PetLify helped us find our furry family member. The platform made it easy to connect with pet owners.&quot;</p>
                 <div className="testimonial-author">
-                  <strong>Emily & David</strong>
+                  <strong>Devesh, Delhi, India</strong>
                   <span>Adopted Whiskers, a 1-year-old Tabby Cat</span>
                 </div>
               </div>
@@ -112,9 +112,9 @@ const Home = () => {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>"Thanks to PetLify, we found our loyal companion. The detailed pet profiles helped us make the right choice."</p>
+                <p>Thanks to PetLify, we found our loyal companion. The detailed pet profiles helped us make the right choice."</p>
                 <div className="testimonial-author">
-                  <strong>John & Lisa</strong>
+                  <strong>Mohit, Varanasi, India</strong>
                   <span>Adopted Max, a 3-year-old Labrador</span>
                 </div>
               </div>
@@ -127,14 +127,14 @@ const Home = () => {
         <div className="container">
           <h2>Ready to Find Your Perfect Pet?</h2>
           <p>Join thousands of happy families who found their companions through PetLify</p>
-          <div className="cta-buttons">
-            <Link to="/pets" className="cta-button primary">
-              Start Your Search
-            </Link>
-            <Link to="/submit-pet" className="cta-button secondary">
-              List Your Pet
-            </Link>
-          </div>
+                     <div className="cta-buttons">
+             <Link to="/pets" className="cta-button primary">
+               Start Your Search
+             </Link>
+             <Link to="/submit-pet" className="cta-button secondary">
+               List Your Pet
+             </Link>
+           </div>
         </div>
       </section>
     </div>

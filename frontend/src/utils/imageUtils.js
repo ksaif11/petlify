@@ -1,33 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9000';
 
-const isValidImageUrl = (url) => {
-  if (!url || typeof url !== 'string') return false;
-  
-  try {
-    new URL(url);
-  } catch {
-    return false;
-  }
-  
-  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-  const hasImageExtension = imageExtensions.some(ext => 
-    url.toLowerCase().includes(ext)
-  );
-  
-  const imageDomains = [
-    'cloudinary.com',
-    'unsplash.com',
-    'images.unsplash.com',
-    'picsum.photos',
-    'via.placeholder.com'
-  ];
-  
-  const hasImageDomain = imageDomains.some(domain => 
-    url.includes(domain)
-  );
-  
-  return hasImageExtension || hasImageDomain;
-};
 
 export const getPetImageUrl = (pet) => {
   if (!pet) return null;
@@ -47,35 +18,12 @@ export const getPetImageUrl = (pet) => {
     }
     
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
 
-export const getPetImages = (pet) => {
-  if (!pet) return [];
-  
-  try {
-    if (pet.images && Array.isArray(pet.images)) {
-      return pet.images.map(image => {
-        if (typeof image === 'string') {
-          return image;
-        } else if (image && image.url) {
-          return image.url;
-        }
-        return null;
-      }).filter(url => url !== null);
-    }
-    
-    if (pet.image) {
-      return [pet.image];
-    }
-    
-    return [];
-  } catch (error) {
-    return [];
-  }
-};
+
 
 export const getFallbackImageUrl = (size = 'medium') => {
   const sizes = {
@@ -126,17 +74,4 @@ export const preloadImage = (src) => {
   });
 };
 
-export const extractImageDimensions = (imageUrl) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      resolve({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        aspectRatio: img.naturalWidth / img.naturalHeight
-      });
-    };
-    img.onerror = () => reject(new Error(`Failed to extract dimensions: ${imageUrl}`));
-    img.src = imageUrl;
-  });
-};
+

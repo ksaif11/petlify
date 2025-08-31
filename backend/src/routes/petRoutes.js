@@ -3,8 +3,6 @@ import {
   submitPet,
   getAllPets,
   getPetById,
-  updatePet,
-  deletePet,
   getPendingPetSubmissions,
   updatePetStatus,
   getFeaturedPets,
@@ -14,16 +12,11 @@ import { uploadMultiple } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/submit", authenticate, uploadMultiple, submitPet);
 router.get("/", getAllPets);
 router.get("/featured", getFeaturedPets);
+router.get("/pending/submissions", authenticate, requireOrganization, getPendingPetSubmissions);
+router.post("/", authenticate, uploadMultiple.array('images', 5), submitPet);
+router.put("/update-status", authenticate, requireOrganization, updatePetStatus);
 router.get("/:id", getPetById);
-router.put("/:id", authenticate, updatePet);
-router.delete("/:id", authenticate, deletePet);
-
-router.get("/admin/pending", authenticate, requireOrganization, getPendingPetSubmissions);
-router.put("/admin/:id/status", authenticate, requireOrganization, updatePetStatus);
 
 export default router;
-
-

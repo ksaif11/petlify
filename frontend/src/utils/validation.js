@@ -76,9 +76,18 @@ export const validateZipCode = (zipCode) => {
     return { isValid: false, message: 'ZIP code is required' };
   }
   
-  const zipRegex = /^\d{5}(-\d{4})?$/;
-  if (!zipRegex.test(zipCode)) {
-    return { isValid: false, message: 'Please enter a valid ZIP code' };
+  // Remove any spaces and convert to uppercase
+  const cleanZipCode = zipCode.replace(/\s/g, '').toUpperCase();
+  
+  // More flexible regex that accepts various postal code formats
+  // US: 12345 or 12345-1234
+  // Canadian: A1A 1A1
+  // UK: A1 1AA, A11 1AA, AA1 1AA, AA11 1AA
+  // International: Allow alphanumeric with 3-10 characters
+  const zipRegex = /^[A-Z0-9]{3,10}$|^\d{5}(-\d{4})?$|^[A-Z]\d[A-Z]\s?\d[A-Z]\d$|^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/;
+  
+  if (!zipRegex.test(cleanZipCode)) {
+    return { isValid: false, message: 'Please enter a valid postal/ZIP code' };
   }
   
   return { isValid: true, message: '' };
@@ -121,6 +130,8 @@ export const validateMultipleFiles = (files, maxFiles = 5, maxSize = 5) => {
   
   return { isValid: true, message: '' };
 };
+
+
 
 export const validateYesNo = (value) => {
   if (!value) {

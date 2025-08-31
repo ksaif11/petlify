@@ -1,4 +1,5 @@
 import Pet from "../models/Pet.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const submitPet = async (req, res) => {
   try {
@@ -33,9 +34,19 @@ export const submitPet = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const images = req.files ? req.files.map(file => file.path) : [];
+    const images = req.files ? req.files.map(file => file.path || file.url) : [];
 
-    const goodWithArray = typeof goodWith === 'string' ? JSON.parse(goodWith) : goodWith;
+    let goodWithArray = [];
+    if (goodWith) {
+      try {
+        goodWithArray = typeof goodWith === 'string' ? JSON.parse(goodWith) : goodWith;
+        if (!Array.isArray(goodWithArray)) {
+          goodWithArray = [];
+        }
+      } catch (error) {
+        goodWithArray = [];
+      }
+    }
 
     const pet = new Pet({
       name,
@@ -47,9 +58,9 @@ export const submitPet = async (req, res) => {
       size,
       color,
       weight: parseFloat(weight),
-      isVaccinated: isVaccinated === 'Yes',
-      isNeutered: isNeutered === 'Yes',
-      isHouseTrained: isHouseTrained === 'Yes',
+      isVaccinated: isVaccinated === 'Yes' || isVaccinated === true,
+      isNeutered: isNeutered === 'Yes' || isNeutered === true,
+      isHouseTrained: isHouseTrained === 'Yes' || isHouseTrained === true,
       healthIssues,
       specialNeeds,
       temperament,
@@ -116,61 +127,26 @@ export const getAllPets = async (req, res) => {
 
 export const getPetById = async (req, res) => {
   try {
-    const pet = await Pet.findById(req.params.id);
+    const { id } = req.params;
+    
+    // Validate petId format
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid pet ID format" });
+    }
+    
+    const pet = await Pet.findById(id);
     if (!pet) {
       return res.status(404).json({ message: "Pet not found" });
     }
+    
     res.json(pet);
   } catch (error) {
+    console.error('Error in getPetById:', error);
     res.status(500).json({ message: "Error fetching pet", error: error.message });
   }
 };
 
-export const updatePet = async (req, res) => {
-  try {
-    const pet = await Pet.findById(req.params.id);
-    if (!pet) {
-      return res.status(404).json({ message: "Pet not found" });
-    }
 
-    if (pet.submittedBy.toString() !== req.user.id && !req.user.isAdmin) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedPet);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating pet", error: error.message });
-  }
-};
-
-export const deletePet = async (req, res) => {
-  try {
-    const pet = await Pet.findById(req.params.id);
-    if (!pet) {
-      return res.status(404).json({ message: "Pet not found" });
-    }
-
-    if (pet.submittedBy.toString() !== req.user.id && !req.user.isAdmin) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    if (pet.images && pet.images.length > 0) {
-      for (const imagePath of pet.images) {
-        try {
-          const publicId = imagePath.split('/').pop().split('.')[0];
-          await cloudinary.uploader.destroy(publicId);
-        } catch (error) {
-        }
-      }
-    }
-
-    await Pet.findByIdAndDelete(req.params.id);
-    res.json({ message: "Pet deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting pet", error: error.message });
-  }
-};
 
 export const getPendingPetSubmissions = async (req, res) => {
   try {
@@ -183,8 +159,18 @@ export const getPendingPetSubmissions = async (req, res) => {
 
 export const updatePetStatus = async (req, res) => {
   try {
-    const { status } = req.body;
-    const pet = await Pet.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    const { petId, status } = req.body;
+    
+    if (!petId || !status) {
+      return res.status(400).json({ message: "Pet ID and status are required" });
+    }
+    
+    const pet = await Pet.findByIdAndUpdate(petId, { status }, { new: true });
+    
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+    
     res.json(pet);
   } catch (error) {
     res.status(500).json({ message: "Error updating pet status", error: error.message });
@@ -193,7 +179,7 @@ export const updatePetStatus = async (req, res) => {
 
 export const getFeaturedPets = async (req, res) => {
   try {
-    const pets = await Pet.find({ status: "approved" }).sort({ createdAt: -1 }).limit(6);
+    const pets = await Pet.find({ status: "approved" }).sort({ createdAt: -1 }).limit(3);
     res.json(pets);
   } catch (error) {
     res.status(500).json({ message: "Error fetching featured pets", error: error.message });

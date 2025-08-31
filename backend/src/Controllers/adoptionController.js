@@ -38,6 +38,11 @@ export const submitAdoptionRequest = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Validate petId format
+    if (!petId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid pet ID format" });
+    }
+
     const pet = await Pet.findById(petId);
     if (!pet) {
       return res.status(404).json({ message: "Pet not found" });
@@ -58,7 +63,7 @@ export const submitAdoptionRequest = async (req, res) => {
       applicantName,
       applicantEmail,
       applicantPhone,
-      applicantAge: parseInt(applicantAge),
+      applicantAge: parseInt(applicantAge) || 18,
       applicantOccupation,
       applicantAddress,
       applicantCity,
@@ -66,14 +71,14 @@ export const submitAdoptionRequest = async (req, res) => {
       applicantZipCode,
       livingSituation,
       housingType,
-      landlordApproval: landlordApproval === 'yes',
+      landlordApproval: landlordApproval === 'yes' || landlordApproval === true,
       landlordContact,
-      householdMembers: parseInt(householdMembers),
+      householdMembers: parseInt(householdMembers) || 1,
       childrenAges,
-      otherPets: otherPets === 'yes',
+      otherPets: otherPets === 'yes' || otherPets === true,
       otherPetsDetails,
       petExperience,
-      petAloneHours: parseInt(petAloneHours),
+      petAloneHours: parseInt(petAloneHours) || 0,
       petExercisePlan,
       petTrainingPlan,
       financialCommitment,
@@ -128,12 +133,21 @@ export const getPendingAdoptionRequests = async (req, res) => {
 
 export const updateAdoptionRequestStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { requestId, status } = req.body;
+    
+    if (!requestId || !status) {
+      return res.status(400).json({ message: "Request ID and status are required" });
+    }
+    
     const request = await AdoptionRequest.findByIdAndUpdate(
-      req.params.id,
+      requestId,
       { status },
       { new: true }
     ).populate('pet').populate('user', 'name email');
+    
+    if (!request) {
+      return res.status(404).json({ message: "Adoption request not found" });
+    }
     
     res.json(request);
   } catch (error) {

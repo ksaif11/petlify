@@ -5,6 +5,12 @@ export const authenticate = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "Authentication failed!" });
   }
+  
+  if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET is not defined in environment variables");
+    return res.status(500).json({ message: "Server configuration error" });
+  }
+  
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded) {

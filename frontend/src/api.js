@@ -42,6 +42,10 @@ api.interceptors.response.use(
                         'An unexpected error occurred';
     
     error.userMessage = errorMessage;
+    
+    // Log error for debugging
+    console.error('API Error:', error);
+    
     return Promise.reject(error);
   }
 );
@@ -59,7 +63,7 @@ export const login = async (userData) => {
 
 // Pet API functions
 export const getAllPets = async () => {
-  const response = await api.get('/pets/all');
+  const response = await api.get('/pets');
   return response.data;
 };
 
@@ -93,16 +97,18 @@ export const getUserAdoptionRequests = async () => {
   return response.data;
 };
 
+export const getAllAdoptionRequests = async () => {
+  const response = await api.get('/adoptions/all');
+  return response.data;
+};
+
 export const updateAdoptionRequestStatus = async (requestId, status) => {
   const response = await api.put('/adoptions/update-status', { requestId, status });
   return response.data;
 };
 
 // Organization API functions
-export const getAllAdoptionRequests = async () => {
-  const response = await api.get('/adoptions/all');
-  return response.data;
-};
+
 
 export const getPendingAdoptionRequests = async () => {
   const response = await api.get('/adoptions/pending');

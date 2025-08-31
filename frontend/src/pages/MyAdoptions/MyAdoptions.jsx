@@ -13,7 +13,7 @@ const MyAdoptions = () => {
       try {
         const data = await getUserAdoptionRequests();
         setRequests(data);
-      } catch (err) {
+      } catch {
         setError("Failed to load adoption requests");
       } finally {
         setLoading(false);
@@ -69,7 +69,7 @@ const MyAdoptions = () => {
 
         {requests.length === 0 ? (
           <div className="no-requests">
-            <p>You haven't submitted any adoption requests yet.</p>
+            <p>You haven&apos;t submitted any adoption requests yet.</p>
             <a href="/pets" className="browse-pets-btn">
               Browse Available Pets
             </a>

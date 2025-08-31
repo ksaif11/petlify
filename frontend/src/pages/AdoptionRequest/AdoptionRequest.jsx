@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPetById, submitAdoptionRequest } from "../../api";
-import { showError, showSuccess, showWarning } from "../../utils/toast";
+import { showError, showSuccess } from "../../utils/toast";
 import { 
   validateRequired, 
   validateEmail, 
@@ -12,7 +12,7 @@ import {
 import "./AdoptionRequest.css";
 
 const AdoptionRequest = () => {
-  const { id } = useParams();
+  const { petId } = useParams();
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,17 +58,23 @@ const AdoptionRequest = () => {
   useEffect(() => {
     const fetchPet = async () => {
       try {
-        const petData = await getPetById(id);
+        const petData = await getPetById(petId);
         setPet(petData);
-      } catch (err) {
+      } catch {
         showError("Failed to load pet details");
         navigate("/pets");
       } finally {
         setLoading(false);
       }
     };
-    fetchPet();
-  }, [id, navigate]);
+    
+    if (petId) {
+      fetchPet();
+    } else {
+      showError("Pet ID is missing");
+      navigate("/pets");
+    }
+  }, [petId, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,92 +96,117 @@ const AdoptionRequest = () => {
 
     switch (step) {
       case 1:
-        if (!validateRequired(formData.applicantName)) {
-          newErrors.applicantName = "Name is required";
+        const nameValidation = validateRequired(formData.applicantName, 'Name');
+        if (!nameValidation.isValid) {
+          newErrors.applicantName = nameValidation.message;
         }
         if (!validateEmail(formData.applicantEmail)) {
           newErrors.applicantEmail = "Valid email is required";
         }
-        if (!validatePhone(formData.applicantPhone)) {
-          newErrors.applicantPhone = "Valid phone number is required";
+        const phoneValidation = validatePhone(formData.applicantPhone);
+        if (!phoneValidation.isValid) {
+          newErrors.applicantPhone = phoneValidation.message;
         }
-        if (!validateRequired(formData.applicantAge)) {
-          newErrors.applicantAge = "Age is required";
+        const ageValidation = validateRequired(formData.applicantAge, 'Age');
+        if (!ageValidation.isValid) {
+          newErrors.applicantAge = ageValidation.message;
         }
-        if (!validateRequired(formData.applicantOccupation)) {
-          newErrors.applicantOccupation = "Occupation is required";
+        const occupationValidation = validateRequired(formData.applicantOccupation, 'Occupation');
+        if (!occupationValidation.isValid) {
+          newErrors.applicantOccupation = occupationValidation.message;
         }
-        if (!validateRequired(formData.applicantAddress)) {
-          newErrors.applicantAddress = "Address is required";
+        const addressValidation = validateRequired(formData.applicantAddress, 'Address');
+        if (!addressValidation.isValid) {
+          newErrors.applicantAddress = addressValidation.message;
         }
-        if (!validateRequired(formData.applicantCity)) {
-          newErrors.applicantCity = "City is required";
+        const cityValidation = validateRequired(formData.applicantCity, 'City');
+        if (!cityValidation.isValid) {
+          newErrors.applicantCity = cityValidation.message;
         }
-        if (!validateRequired(formData.applicantState)) {
-          newErrors.applicantState = "State is required";
+        const stateValidation = validateRequired(formData.applicantState, 'State');
+        if (!stateValidation.isValid) {
+          newErrors.applicantState = stateValidation.message;
         }
-        if (!validateRequired(formData.applicantZipCode)) {
-          newErrors.applicantZipCode = "Zip code is required";
+        const zipCodeValidation = validateRequired(formData.applicantZipCode, 'Zip code');
+        if (!zipCodeValidation.isValid) {
+          newErrors.applicantZipCode = zipCodeValidation.message;
         }
         break;
 
       case 2:
-        if (!validateRequired(formData.livingSituation)) {
-          newErrors.livingSituation = "Living situation is required";
+        const livingSituationValidation = validateRequired(formData.livingSituation, 'Living situation');
+        if (!livingSituationValidation.isValid) {
+          newErrors.livingSituation = livingSituationValidation.message;
         }
-        if (!validateRequired(formData.housingType)) {
-          newErrors.housingType = "Housing type is required";
+        const housingTypeValidation = validateRequired(formData.housingType, 'Housing type');
+        if (!housingTypeValidation.isValid) {
+          newErrors.housingType = housingTypeValidation.message;
         }
         if (formData.livingSituation === "renting" && !validateYesNo(formData.landlordApproval)) {
           newErrors.landlordApproval = "Landlord approval is required";
         }
-        if (formData.livingSituation === "renting" && formData.landlordApproval === "yes" && !validateRequired(formData.landlordContact)) {
-          newErrors.landlordContact = "Landlord contact is required";
+        if (formData.livingSituation === "renting" && formData.landlordApproval === "yes") {
+          const landlordContactValidation = validateRequired(formData.landlordContact, 'Landlord contact');
+          if (!landlordContactValidation.isValid) {
+            newErrors.landlordContact = landlordContactValidation.message;
+          }
         }
         break;
 
       case 3:
-        if (!validateRequired(formData.householdMembers)) {
-          newErrors.householdMembers = "Number of household members is required";
+        const householdMembersValidation = validateRequired(formData.householdMembers, 'Number of household members');
+        if (!householdMembersValidation.isValid) {
+          newErrors.householdMembers = householdMembersValidation.message;
         }
-        if (!validateRequired(formData.childrenAges)) {
-          newErrors.childrenAges = "Children ages information is required";
+        const childrenAgesValidation = validateRequired(formData.childrenAges, 'Children ages information');
+        if (!childrenAgesValidation.isValid) {
+          newErrors.childrenAges = childrenAgesValidation.message;
         }
         if (!validateYesNo(formData.otherPets)) {
           newErrors.otherPets = "Other pets information is required";
         }
-        if (formData.otherPets === "yes" && !validateRequired(formData.otherPetsDetails)) {
-          newErrors.otherPetsDetails = "Other pets details are required";
+        if (formData.otherPets === "yes") {
+          const otherPetsDetailsValidation = validateRequired(formData.otherPetsDetails, 'Other pets details');
+          if (!otherPetsDetailsValidation.isValid) {
+            newErrors.otherPetsDetails = otherPetsDetailsValidation.message;
+          }
         }
         break;
 
       case 4:
-        if (!validateRequired(formData.petExperience)) {
-          newErrors.petExperience = "Pet experience is required";
+        const petExperienceValidation = validateRequired(formData.petExperience, 'Pet experience');
+        if (!petExperienceValidation.isValid) {
+          newErrors.petExperience = petExperienceValidation.message;
         }
         if (!validateNumber(formData.petAloneHours)) {
           newErrors.petAloneHours = "Hours pet will be alone is required";
         }
-        if (!validateRequired(formData.petExercisePlan)) {
-          newErrors.petExercisePlan = "Exercise plan is required";
+        const exercisePlanValidation = validateRequired(formData.petExercisePlan, 'Exercise plan');
+        if (!exercisePlanValidation.isValid) {
+          newErrors.petExercisePlan = exercisePlanValidation.message;
         }
-        if (!validateRequired(formData.petTrainingPlan)) {
-          newErrors.petTrainingPlan = "Training plan is required";
+        const trainingPlanValidation = validateRequired(formData.petTrainingPlan, 'Training plan');
+        if (!trainingPlanValidation.isValid) {
+          newErrors.petTrainingPlan = trainingPlanValidation.message;
         }
         break;
 
       case 5:
-        if (!validateRequired(formData.financialCommitment)) {
-          newErrors.financialCommitment = "Financial commitment is required";
+        const financialCommitmentValidation = validateRequired(formData.financialCommitment, 'Financial commitment');
+        if (!financialCommitmentValidation.isValid) {
+          newErrors.financialCommitment = financialCommitmentValidation.message;
         }
-        if (!validateRequired(formData.timeCommitment)) {
-          newErrors.timeCommitment = "Time commitment is required";
+        const timeCommitmentValidation = validateRequired(formData.timeCommitment, 'Time commitment');
+        if (!timeCommitmentValidation.isValid) {
+          newErrors.timeCommitment = timeCommitmentValidation.message;
         }
-        if (!validateRequired(formData.adoptionMotivation)) {
-          newErrors.adoptionMotivation = "Adoption motivation is required";
+        const adoptionMotivationValidation = validateRequired(formData.adoptionMotivation, 'Adoption motivation');
+        if (!adoptionMotivationValidation.isValid) {
+          newErrors.adoptionMotivation = adoptionMotivationValidation.message;
         }
-        if (!validateRequired(formData.petExpectations)) {
-          newErrors.petExpectations = "Pet expectations are required";
+        const petExpectationsValidation = validateRequired(formData.petExpectations, 'Pet expectations');
+        if (!petExpectationsValidation.isValid) {
+          newErrors.petExpectations = petExpectationsValidation.message;
         }
         break;
     }
@@ -205,7 +236,7 @@ const AdoptionRequest = () => {
     
     try {
       await submitAdoptionRequest({
-        petId: id,
+        petId: petId,
         ...formData
       });
       
@@ -253,23 +284,23 @@ const AdoptionRequest = () => {
         <div className="step-indicator">
           <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>
             <span className="step-number">1</span>
-            <span className="step-label">Personal Info</span>
+            <span className="step-label">-Personal Info</span>
           </div>
           <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>
             <span className="step-number">2</span>
-            <span className="step-label">Living Situation</span>
+            <span className="step-label">-Living Situation</span>
           </div>
           <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>
             <span className="step-number">3</span>
-            <span className="step-label">Household</span>
+            <span className="step-label">-Household</span>
           </div>
           <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>
             <span className="step-number">4</span>
-            <span className="step-label">Experience</span>
+            <span className="step-label">-Experience</span>
           </div>
           <div className={`step ${currentStep >= 5 ? 'active' : ''}`}>
             <span className="step-number">5</span>
-            <span className="step-label">Commitment</span>
+            <span className="step-label">-Commitment</span>
           </div>
         </div>
 
@@ -286,6 +317,7 @@ const AdoptionRequest = () => {
                   name="applicantName"
                   value={formData.applicantName}
                   onChange={handleChange}
+                  placeholder="Enter your full name"
                   className={errors.applicantName ? 'error' : ''}
                 />
                 {errors.applicantName && <span className="error-message">{errors.applicantName}</span>}
@@ -299,6 +331,7 @@ const AdoptionRequest = () => {
                   name="applicantEmail"
                   value={formData.applicantEmail}
                   onChange={handleChange}
+                  placeholder="Enter your email address"
                   className={errors.applicantEmail ? 'error' : ''}
                 />
                 {errors.applicantEmail && <span className="error-message">{errors.applicantEmail}</span>}
@@ -312,6 +345,7 @@ const AdoptionRequest = () => {
                   name="applicantPhone"
                   value={formData.applicantPhone}
                   onChange={handleChange}
+                  placeholder="Enter your phone number"
                   className={errors.applicantPhone ? 'error' : ''}
                 />
                 {errors.applicantPhone && <span className="error-message">{errors.applicantPhone}</span>}
@@ -339,6 +373,7 @@ const AdoptionRequest = () => {
                   name="applicantOccupation"
                   value={formData.applicantOccupation}
                   onChange={handleChange}
+                  placeholder="Enter your occupation or job title"
                   className={errors.applicantOccupation ? 'error' : ''}
                 />
                 {errors.applicantOccupation && <span className="error-message">{errors.applicantOccupation}</span>}
@@ -352,6 +387,7 @@ const AdoptionRequest = () => {
                   name="applicantAddress"
                   value={formData.applicantAddress}
                   onChange={handleChange}
+                  placeholder="Enter your complete street address"
                   className={errors.applicantAddress ? 'error' : ''}
                 />
                 {errors.applicantAddress && <span className="error-message">{errors.applicantAddress}</span>}
@@ -366,6 +402,7 @@ const AdoptionRequest = () => {
                     name="applicantCity"
                     value={formData.applicantCity}
                     onChange={handleChange}
+                    placeholder="Enter your city"
                     className={errors.applicantCity ? 'error' : ''}
                   />
                   {errors.applicantCity && <span className="error-message">{errors.applicantCity}</span>}
@@ -379,6 +416,7 @@ const AdoptionRequest = () => {
                     name="applicantState"
                     value={formData.applicantState}
                     onChange={handleChange}
+                    placeholder="Enter your state"
                     className={errors.applicantState ? 'error' : ''}
                   />
                   {errors.applicantState && <span className="error-message">{errors.applicantState}</span>}
@@ -392,6 +430,7 @@ const AdoptionRequest = () => {
                     name="applicantZipCode"
                     value={formData.applicantZipCode}
                     onChange={handleChange}
+                    placeholder="Enter your ZIP code"
                     className={errors.applicantZipCode ? 'error' : ''}
                   />
                   {errors.applicantZipCode && <span className="error-message">{errors.applicantZipCode}</span>}
@@ -468,7 +507,7 @@ const AdoptionRequest = () => {
                         name="landlordContact"
                         value={formData.landlordContact}
                         onChange={handleChange}
-                        placeholder="Name and phone number"
+                        placeholder="Enter landlord's name and phone number"
                         className={errors.landlordContact ? 'error' : ''}
                       />
                       {errors.landlordContact && <span className="error-message">{errors.landlordContact}</span>}
@@ -505,7 +544,7 @@ const AdoptionRequest = () => {
                   name="childrenAges"
                   value={formData.childrenAges}
                   onChange={handleChange}
-                  placeholder="e.g., 5, 8, 12 or 'No children'"
+                  placeholder="Enter ages of children (e.g., 5, 8, 12) or 'No children'"
                   className={errors.childrenAges ? 'error' : ''}
                 />
                 {errors.childrenAges && <span className="error-message">{errors.childrenAges}</span>}
@@ -535,7 +574,7 @@ const AdoptionRequest = () => {
                     name="otherPetsDetails"
                     value={formData.otherPetsDetails}
                     onChange={handleChange}
-                    placeholder="Species, breeds, ages, and temperaments"
+                    placeholder="Describe your other pets (species, breeds, ages, and temperaments)"
                     className={errors.otherPetsDetails ? 'error' : ''}
                   />
                   {errors.otherPetsDetails && <span className="error-message">{errors.otherPetsDetails}</span>}
@@ -587,7 +626,7 @@ const AdoptionRequest = () => {
                   name="petExercisePlan"
                   value={formData.petExercisePlan}
                   onChange={handleChange}
-                  placeholder="Describe your exercise plan (walks, playtime, etc.)"
+                  placeholder="Describe how you plan to exercise the pet (walks, playtime, activities, etc.)"
                   className={errors.petExercisePlan ? 'error' : ''}
                 />
                 {errors.petExercisePlan && <span className="error-message">{errors.petExercisePlan}</span>}
@@ -600,7 +639,7 @@ const AdoptionRequest = () => {
                   name="petTrainingPlan"
                   value={formData.petTrainingPlan}
                   onChange={handleChange}
-                  placeholder="Describe your training approach"
+                  placeholder="Describe your plan for training and behavior management"
                   className={errors.petTrainingPlan ? 'error' : ''}
                 />
                 {errors.petTrainingPlan && <span className="error-message">{errors.petTrainingPlan}</span>}
@@ -623,7 +662,7 @@ const AdoptionRequest = () => {
                 >
                   <option value="">Select answer</option>
                   <option value="yes">Yes, I understand the costs</option>
-                  <option value="somewhat">Somewhat, I'm learning</option>
+                  <option value="somewhat">Somewhat, I&apos;m learning</option>
                   <option value="no">No, I need more information</option>
                 </select>
                 {errors.financialCommitment && <span className="error-message">{errors.financialCommitment}</span>}
@@ -641,7 +680,7 @@ const AdoptionRequest = () => {
                   <option value="">Select answer</option>
                   <option value="yes">Yes, I have plenty of time</option>
                   <option value="somewhat">Somewhat, I can make time</option>
-                  <option value="no">No, I'm concerned about time</option>
+                  <option value="no">No, I&apos;m concerned about time</option>
                 </select>
                 {errors.timeCommitment && <span className="error-message">{errors.timeCommitment}</span>}
               </div>
@@ -653,7 +692,7 @@ const AdoptionRequest = () => {
                   name="adoptionMotivation"
                   value={formData.adoptionMotivation}
                   onChange={handleChange}
-                  placeholder="Tell us why you want to adopt this specific pet"
+                  placeholder="Explain why you want to adopt this specific pet and what drew you to them"
                   className={errors.adoptionMotivation ? 'error' : ''}
                 />
                 {errors.adoptionMotivation && <span className="error-message">{errors.adoptionMotivation}</span>}
@@ -666,7 +705,7 @@ const AdoptionRequest = () => {
                   name="petExpectations"
                   value={formData.petExpectations}
                   onChange={handleChange}
-                  placeholder="What do you hope this pet will bring to your life?"
+                  placeholder="Describe what you hope this pet will bring to your life and your expectations"
                   className={errors.petExpectations ? 'error' : ''}
                 />
                 {errors.petExpectations && <span className="error-message">{errors.petExpectations}</span>}
@@ -679,7 +718,7 @@ const AdoptionRequest = () => {
                   name="additionalInfo"
                   value={formData.additionalInfo}
                   onChange={handleChange}
-                  placeholder="Any other information you'd like to share"
+                  placeholder="Share any additional information that might help with your adoption application"
                 />
               </div>
             </div>

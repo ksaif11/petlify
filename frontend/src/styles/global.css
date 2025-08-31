@@ -99,7 +99,6 @@ button {
 
 button:hover {
   background: var(--primary-dark);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
@@ -154,8 +153,7 @@ input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--primary-color);
   background: var(--bg-primary);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1), var(--shadow-md);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 input::placeholder, textarea::placeholder {

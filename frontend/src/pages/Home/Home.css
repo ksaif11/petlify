@@ -5,8 +5,8 @@
 }
 
 /* Hero Section */
-.hero {
-  background: var(--primary-color);
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
   color: white;
   padding: 6rem 0;
   text-align: center;
@@ -22,14 +22,16 @@
   padding: 0 2rem;
 }
 
-.hero h1 {
+.hero-section h1 {
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.hero p {
+.hero-section p {
   font-size: 1.25rem;
   margin-bottom: 2.5rem;
   opacity: 0.95;
@@ -67,6 +69,17 @@
   box-shadow: var(--shadow-lg);
 }
 
+.cta-button.secondary {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+}
+
+.cta-button.secondary:hover {
+  background: white;
+  color: var(--primary-color);
+}
+
 /* Container */
 .container {
   max-width: 1200px;
@@ -77,336 +90,245 @@
 }
 
 /* Featured Pets Section */
-.featured {
+.featured-pets-section {
   padding: 5rem 0;
   background: var(--bg-primary);
 }
 
-.section-header {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.section-header h2 {
+.featured-pets-section h2 {
   font-size: 2.5rem;
   color: var(--text-primary);
   margin-bottom: 1rem;
   font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.section-header p {
+.featured-pets-section > .container > p {
   font-size: 1.125rem;
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Loading and Error States */
-.loading-container,
-.error-container,
-.no-pets-container {
+  margin: 0 auto 3rem auto;
   text-align: center;
-  padding: 3rem 2rem;
-  background: var(--bg-secondary);
-  border-radius: var(--border-radius);
-  margin: 2rem 0;
-  border: 1px solid var(--border-color);
+  line-height: 1.6;
 }
 
 .loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--border-color);
-  border-top: 4px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text,
-.error-text,
-.no-pets-text {
-  font-size: 1.125rem;
-  font-weight: 500;
+  text-align: center;
+  padding: 3rem 0;
   color: var(--text-secondary);
-  margin: 0;
+  font-size: 1.125rem;
 }
 
-.error-text {
-  color: #e53e3e;
-}
-
-.featured-pets {
+.featured-pets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
   margin-bottom: 3rem;
 }
 
-.pet-card {
+.featured-pet-card {
   background: var(--bg-primary);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-md);
   transition: var(--transition);
   border: 1px solid var(--border-color);
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
-.pet-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--primary-color);
+.featured-pet-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
 }
 
-.pet-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
-}
-
-.pet-image {
-  height: 280px;
+.pet-image-container {
+  width: 100%;
+  height: 250px;
   overflow: hidden;
-  background: #f8f9fa;
   position: relative;
 }
 
-.pet-image img {
+.pet-image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
   transition: var(--transition);
-  display: block;
 }
 
-.pet-card:hover .pet-image img {
+.featured-pet-card:hover .pet-image-container img {
   transform: scale(1.05);
 }
 
 .pet-info {
   padding: 1.5rem;
-  text-align: center;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .pet-info h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
-.pet-species {
-  font-size: 1.125rem;
+.pet-info p {
   color: var(--text-secondary);
-  font-weight: 500;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
-.pet-breed {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  font-style: italic;
-  margin: 0;
+.view-details-btn {
+  display: inline-block;
+  background: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-sm);
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.view-all-container {
+.view-details-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.view-all-pets {
   text-align: center;
 }
 
-.view-all-button {
+.view-all-btn {
   display: inline-block;
-  padding: 1rem 2.5rem;
-  background: var(--primary-color);
+  background: var(--secondary-color);
   color: white;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius-sm);
   text-decoration: none;
-  font-size: 1.125rem;
   font-weight: 600;
-  border-radius: 50px;
+  font-size: 1.125rem;
   transition: var(--transition);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: var(--shadow-md);
 }
 
-.view-all-button:hover {
+.view-all-btn:hover {
+  background: var(--secondary-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
 /* Testimonials Section */
-.testimonials {
+.testimonials-section {
   padding: 5rem 0;
   background: var(--bg-secondary);
 }
 
+.testimonials-section h2 {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 3rem;
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
-  margin-top: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
 }
 
-.testimonial {
+.testimonial-card {
   background: var(--bg-primary);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
   padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   transition: var(--transition);
-  position: relative;
 }
 
-.testimonial::before {
-  content: '"';
-  position: absolute;
-  top: 1rem;
-  left: 1.5rem;
-  font-size: 3rem;
-  color: var(--primary-color);
-  font-family: serif;
-  opacity: 0.3;
-}
-
-.testimonial:hover {
-  transform: translateY(-4px);
+.testimonial-card:hover {
+  transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
 }
 
-.testimonial-text {
+.testimonial-content p {
   font-size: 1.125rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
+  line-height: 1.6;
   font-style: italic;
-  padding-left: 1rem;
 }
 
 .testimonial-author {
-  border-top: 1px solid var(--border-color);
-  padding-top: 1rem;
-  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.author-name {
+.testimonial-author strong {
+  color: var(--text-primary);
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
 }
 
-.author-location {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin: 0;
+.testimonial-author span {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
 }
 
 /* CTA Section */
 .cta-section {
   padding: 5rem 0;
-  background: var(--bg-secondary);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
   text-align: center;
 }
 
-.cta-content h2 {
+.cta-section h2 {
   font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
   margin-bottom: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.cta-content p {
-  font-size: 1.125rem;
-  color: var(--text-secondary);
+.cta-section p {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.95;
   max-width: 600px;
-  margin: 0 auto 2rem;
+  margin-left: auto;
+  margin-right: auto;
   line-height: 1.6;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .hero h1 {
-    font-size: 3rem;
-  }
-  
-  .featured-pets {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-  }
-  
-  .pet-image {
-    height: 260px;
-  }
-  
-  .testimonials-grid {
-    gap: 2rem;
-  }
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-  .hero {
-    padding: 4rem 0;
-  }
-  
-  .hero h1 {
+  .hero-section h1 {
     font-size: 2.5rem;
-    margin-bottom: 1rem;
   }
   
-  .hero p {
+  .hero-section p {
     font-size: 1.125rem;
-    margin-bottom: 2rem;
   }
   
-  .featured {
-    padding: 3rem 0;
-  }
-  
-  .section-header h2 {
-    font-size: 2rem;
-  }
-  
-  .featured-pets {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  .featured-pets-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
-  }
-  
-  .pet-image {
-    height: 240px;
-  }
-  
-  .pet-info {
-    padding: 1.25rem;
-  }
-  
-  .pet-info h3 {
-    font-size: 1.25rem;
-  }
-  
-  .testimonials {
-    padding: 3rem 0;
   }
   
   .testimonials-grid {
@@ -414,124 +336,61 @@
     gap: 1.5rem;
   }
   
-  .testimonial {
-    padding: 1.5rem;
-  }
-  
-  .testimonial-text {
-    font-size: 1rem;
-  }
-  
-  .cta-section {
-    padding: 3rem 0;
-  }
-  
-  .cta-content h2 {
+  .cta-section h2 {
     font-size: 2rem;
+  }
+  
+  .cta-section p {
+    font-size: 1.125rem;
   }
 }
 
 @media (max-width: 480px) {
-  .hero {
-    padding: 3rem 0;
+  .hero-section {
+    padding: 4rem 0;
   }
   
-  .hero h1 {
+  .hero-section h1 {
     font-size: 2rem;
   }
   
-  .hero p {
+  .hero-section p {
     font-size: 1rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
   }
   
   .cta-button {
-    padding: 0.875rem 2rem;
-    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
   }
   
-  .featured {
-    padding: 2rem 0;
-  }
-  
-  .section-header h2 {
-    font-size: 1.75rem;
-  }
-  
-  .section-header p {
-    font-size: 1rem;
-  }
-  
-  .featured-pets {
+  .featured-pets-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   
-  .pet-image {
-    height: 220px;
-  }
-  
-  .pet-info {
-    padding: 1rem;
-  }
-  
-  .pet-info h3 {
-    font-size: 1.125rem;
-  }
-  
-  .pet-species {
-    font-size: 1rem;
-  }
-  
-  .view-all-button {
-    padding: 0.875rem 2rem;
-    font-size: 1rem;
-  }
-  
-  .testimonials {
-    padding: 2rem 0;
-  }
-  
-  .testimonials-grid {
-    gap: 1rem;
-  }
-  
-  .testimonial {
-    padding: 1.25rem;
-  }
-  
-  .testimonial-text {
-    font-size: 0.9rem;
-  }
-  
-  .author-name {
-    font-size: 1rem;
-  }
-  
-  .author-location {
-    font-size: 0.8rem;
+  .pet-image-container {
+    height: 200px;
   }
   
   .cta-section {
-    padding: 2rem 0;
+    padding: 3rem 0;
   }
   
-  .cta-content h2 {
+  .cta-section h2 {
     font-size: 1.75rem;
   }
   
-  .cta-content p {
+  .cta-section p {
     font-size: 1rem;
   }
   
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border-width: 3px;
-  }
-  
-  .loading-text,
-  .error-text,
-  .no-pets-text {
-    font-size: 1rem;
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
   }
 }

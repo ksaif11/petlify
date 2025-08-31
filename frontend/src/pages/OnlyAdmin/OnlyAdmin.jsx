@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUserAdoptionRequests, updateAdoptionRequestStatus } from "../../api";
+import { getAllAdoptionRequests, updateAdoptionRequestStatus } from "../../api";
 import { showError, showSuccess } from "../../utils/toast";
 import UnifiedPetCard from "../../components/UnifiedPetCard/UnifiedPetCard";
 import "./OnlyAdmin.css";
@@ -16,10 +16,10 @@ const OnlyAdmin = () => {
 
   const fetchAdoptionRequests = async () => {
     try {
-      const data = await getUserAdoptionRequests();
+      const data = await getAllAdoptionRequests();
       setRequests(data);
       setLoading(false);
-    } catch (err) {
+    } catch {
       setError("Failed to load requests");
       setLoading(false);
     }

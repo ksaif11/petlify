@@ -59,8 +59,7 @@
   outline: none;
   border-color: var(--primary-color);
   background: var(--bg-primary);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1), var(--shadow-md);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .register-container input::placeholder {
@@ -87,7 +86,6 @@
 
 .register-container button:hover {
   background: var(--primary-dark);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -128,6 +126,26 @@
 
 .register-container a:hover {
   color: var(--primary-dark);
+}
+
+/* Error styling */
+.input-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.register-container input.error {
+  border-color: #e53e3e;
+  background: #fed7d7;
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: block;
+  text-align: left;
 }
 
 /* Responsive Design */
