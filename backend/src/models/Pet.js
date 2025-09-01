@@ -17,7 +17,6 @@ const petSchema = new mongoose.Schema({
   healthIssues: { type: String, default: "" },
   specialNeeds: { type: String, default: "" },
   temperament: { type: String, required: true },
-  goodWith: [{ type: String }],
   energyLevel: { type: String, enum: ["Low", "Moderate", "High"], required: true },
   
   ownerMobile: { type: String, required: true },

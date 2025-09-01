@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getFeaturedPets } from "../../api";
-import { getPetImageUrl, getFallbackImageUrl, getResponsiveImageUrl } from "../../utils/imageUtils";
+import UnifiedPetCard from "../../components/UnifiedPetCard/UnifiedPetCard";
 import "./Home.css";
 
 const Home = () => {
@@ -23,11 +23,6 @@ const Home = () => {
     };
     fetchFeaturedPets();
   }, []);
-
-  const handleImageError = (e) => {
-    e.target.src = getFallbackImageUrl('medium');
-    e.target.onerror = null;
-  };
 
   return (
     <div className="home-page">
@@ -58,24 +53,11 @@ const Home = () => {
           ) : (
             <div className="featured-pets-grid">
               {featuredPets?.map((pet) => (
-                <div key={pet._id} className="featured-pet-card">
-                  <div className="pet-image-container">
-                    <img
-                      src={getResponsiveImageUrl(getPetImageUrl(pet), 'medium')}
-                      alt={pet.name}
-                      onError={(e) => handleImageError(e, pet.name)}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="pet-info">
-                    <h3>{pet.name}</h3>
-                    <p>{pet.species} • {pet.breed}</p>
-                    <p>{pet.age} years old</p>
-                    <Link to={`/pets/${pet._id}`} className="view-details-btn">
-                      View Details
-                    </Link>
-                  </div>
-                </div>
+                <UnifiedPetCard 
+                  key={pet._id} 
+                  pet={pet} 
+                  variant="default"
+                />
               ))}
             </div>
           )}

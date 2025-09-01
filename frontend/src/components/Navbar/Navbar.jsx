@@ -74,9 +74,7 @@ const Navbar = () => {
           <Link to="/">Home</Link>
                       <Link to="/pets">Find Pets</Link>
           <Link to="/submit-pet">Submit Pet</Link>
-          {isAdmin && (
-            <Link to="/only-admin">Admin</Link>
-          )}
+
         </div>
 
         <div className="profile-container">

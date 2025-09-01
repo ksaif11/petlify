@@ -29,7 +29,6 @@ const SubmitPet = () => {
     healthIssues: "",
     specialNeeds: "",
     temperament: "",
-    goodWith: [],
     energyLevel: "",
 
     ownerMobile: "",
@@ -73,16 +72,6 @@ const SubmitPet = () => {
         [name]: ""
       }));
     }
-  };
-
-  const handleGoodWithChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      goodWith: checked
-        ? [...prev.goodWith, value]
-        : prev.goodWith.filter(item => item !== value)
-    }));
   };
 
   const handleFileChange = (e) => {
@@ -318,11 +307,7 @@ const SubmitPet = () => {
       const formDataToSend = new FormData();
 
       Object.keys(formData).forEach(key => {
-        if (key === 'goodWith') {
-          formDataToSend.append(key, JSON.stringify(formData[key]));
-        } else {
-          formDataToSend.append(key, formData[key]);
-        }
+        formDataToSend.append(key, formData[key]);
       });
 
       images.forEach(image => {
@@ -649,52 +634,6 @@ const SubmitPet = () => {
                 {errors.energyLevel && <span className="error-message">{errors.energyLevel}</span>}
               </div>
 
-              <div className="form-group">
-                <label>Good With (Select all that apply) <span className="optional">(Optional)</span></label>
-                <div className="checkbox-group">
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      name="goodWith"
-                      value="Children"
-                      checked={formData.goodWith.includes('Children')}
-                      onChange={handleGoodWithChange}
-                    />
-                    Children
-                  </label>
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      name="goodWith"
-                      value="Dogs"
-                      checked={formData.goodWith.includes('Dogs')}
-                      onChange={handleGoodWithChange}
-                    />
-                    Dogs
-                  </label>
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      name="goodWith"
-                      value="Cats"
-                      checked={formData.goodWith.includes('Cats')}
-                      onChange={handleGoodWithChange}
-                    />
-                    Cats
-                  </label>
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      name="goodWith"
-                      value="Other Pets"
-                      checked={formData.goodWith.includes('Other Pets')}
-                      onChange={handleGoodWithChange}
-                    />
-                    Other Pets
-                  </label>
-                </div>
-              </div>
-
             </div>
           )}
 
@@ -830,7 +769,7 @@ const SubmitPet = () => {
                     </span>
                   </label>
                 </div>
-                <p className="file-help">Upload 1-5 images (max 5MB each). Supported formats: JPEG, PNG, GIF, WebP</p>
+                <p className="file-help">Upload image of your pet. Supported formats: JPEG, PNG, GIF, WebP</p>
                 {errors.images && <span className="error-message">{errors.images}</span>}
 
                 {imagePreviews.length > 0 && (

@@ -1,5 +1,5 @@
 import React from 'react';
-import SimpleImageNav from '../SimpleImageNav/SimpleImageNav';
+import { getResponsiveImageUrl, getFallbackImageUrl } from '../../utils/imageUtils';
 import './PetDetailCard.css';
 
 const PetDetailCard = ({ pet, onAdoptClick, hasAlreadyRequested }) => {
@@ -27,99 +27,51 @@ const PetDetailCard = ({ pet, onAdoptClick, hasAlreadyRequested }) => {
     return gender.charAt(0).toUpperCase() + gender.slice(1);
   };
 
+  // Get the first image or fallback
+  const petImages = pet.images || [];
+  const firstImage = petImages.length > 0 ? petImages[0] : null;
+  const imageUrl = firstImage ? 
+    (typeof firstImage === 'string' ? firstImage : firstImage.url || firstImage) : 
+    getFallbackImageUrl('large');
+
+  const handleImageError = (e) => {
+    e.target.src = getFallbackImageUrl('large');
+    e.target.onerror = null;
+  };
+
   return (
     <div className="pet-detail-container">
-      {/* Main Pet Card */}
-      <div className="pet-card">
-        {/* Image Section */}
+      {/* Header Section */}
+      <div className="pet-header">
         <div className="pet-image-section">
-          <SimpleImageNav 
-            images={pet.images || []} 
-            petName={pet.name}
+          <img
+            src={getResponsiveImageUrl(imageUrl, 'large')}
+            alt={`${pet.name} - Pet image`}
+            className="pet-main-image"
+            onError={handleImageError}
+            loading="eager"
           />
         </div>
-
-        {/* Info Section */}
-        <div className="pet-info-section">
-          {/* Header */}
-          <div className="pet-header">
-            <h1 className="pet-name">{pet.name}</h1>
-            <div className="pet-basic-info">
-              <span className="pet-breed">{pet.breed || 'Mixed Breed'}</span>
-              <span className="pet-age">{getAgeText(pet.age)}</span>
-              <span className="pet-gender">{getGenderText(pet.gender)}</span>
-              {pet.size && <span className="pet-size">{getSizeText(pet.size)}</span>}
-            </div>
+        
+        <div className="pet-basic-info">
+          <h1 className="pet-name">{pet.name}</h1>
+          <div className="pet-key-details">
+            <span className="detail-tag species">{pet.species}</span>
+            {pet.breed && <span className="detail-tag breed">{pet.breed}</span>}
+            <span className="detail-tag age">{getAgeText(pet.age)}</span>
+            <span className="detail-tag gender">{getGenderText(pet.gender)}</span>
+            {pet.size && <span className="detail-tag size">{getSizeText(pet.size)}</span>}
+            {pet.color && <span className="detail-tag color">{pet.color}</span>}
           </div>
-
-          {/* Description */}
+          
           {pet.description && (
             <div className="pet-description">
               <p>{pet.description}</p>
             </div>
           )}
 
-          {/* Details */}
-          <div className="pet-details">
-            <h3>Pet Details</h3>
-            <div className="detail-row">
-              <div className="detail-item">
-                <span className="detail-label">Species</span>
-                <span className="detail-value">{pet.species}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Breed</span>
-                <span className="detail-value">{pet.breed || 'Mixed'}</span>
-              </div>
-            </div>
-            <div className="detail-row">
-              <div className="detail-item">
-                <span className="detail-label">Age</span>
-                <span className="detail-value">{getAgeText(pet.age)}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Gender</span>
-                <span className="detail-value">{getGenderText(pet.gender)}</span>
-              </div>
-            </div>
-            {pet.size && (
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">Size</span>
-                  <span className="detail-value">{getSizeText(pet.size)}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Color</span>
-                  <span className="detail-value">{pet.color || 'N/A'}</span>
-                </div>
-              </div>
-            )}
-            {pet.healthStatus && (
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">Health Status</span>
-                  <span className="detail-value">{pet.healthStatus}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Vaccinated</span>
-                  <span className="detail-value">{pet.vaccinated ? 'Yes' : 'No'}</span>
-                </div>
-              </div>
-            )}
-            {pet.urgency && (
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">Adoption Urgency</span>
-                  <span className={`detail-value urgency ${getUrgencyColor(pet.urgency)}`}>
-                    {pet.urgency}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Adoption Button */}
-          <div className="adoption-section">
+          {/* Adoption Button in Header */}
+          <div className="adoption-button-section">
             <button 
               className={`adopt-button ${hasAlreadyRequested ? 'disabled' : ''}`}
               onClick={onAdoptClick}
@@ -133,6 +85,149 @@ const PetDetailCard = ({ pet, onAdoptClick, hasAlreadyRequested }) => {
               </p>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* All Pet Information in One Section */}
+      <div className="pet-info-section">
+        <h2 className="section-title">Pet Information</h2>
+        <div className="info-grid">
+          <div className="info-item">
+            <span className="info-label">Species</span>
+            <span className="info-value">{pet.species}</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">Breed</span>
+            <span className="info-value">{pet.breed || 'Mixed Breed'}</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">Age</span>
+            <span className="info-value">{getAgeText(pet.age)}</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">Gender</span>
+            <span className="info-value">{getGenderText(pet.gender)}</span>
+          </div>
+          {pet.size && (
+            <div className="info-item">
+              <span className="info-label">Size</span>
+              <span className="info-value">{getSizeText(pet.size)}</span>
+            </div>
+          )}
+          {pet.color && (
+            <div className="info-item">
+              <span className="info-label">Color</span>
+              <span className="info-value">{pet.color}</span>
+            </div>
+          )}
+          <div className="info-item">
+            <span className="info-label">Health Status</span>
+            <span className="info-value">{pet.healthStatus || 'Good'}</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">Vaccinated</span>
+            <span className={`info-value ${pet.vaccinated ? 'positive' : 'negative'}`}>
+              {pet.vaccinated ? 'Yes' : 'No'}
+            </span>
+          </div>
+          {pet.spayedNeutered !== undefined && (
+            <div className="info-item">
+              <span className="info-label">Spayed/Neutered</span>
+              <span className={`info-value ${pet.spayedNeutered ? 'positive' : 'negative'}`}>
+                {pet.spayedNeutered ? 'Yes' : 'No'}
+              </span>
+            </div>
+          )}
+          {pet.microchipped !== undefined && (
+            <div className="info-item">
+              <span className="info-label">Microchipped</span>
+              <span className={`info-value ${pet.microchipped ? 'positive' : 'negative'}`}>
+                {pet.microchipped ? 'Yes' : 'No'}
+              </span>
+            </div>
+          )}
+          {pet.temperament && (
+            <div className="info-item">
+              <span className="info-label">Temperament</span>
+              <span className="info-value">{pet.temperament}</span>
+            </div>
+          )}
+          {pet.goodWithChildren !== undefined && (
+            <div className="info-item">
+              <span className="info-label">Good with Children</span>
+              <span className={`info-value ${pet.goodWithChildren ? 'positive' : 'negative'}`}>
+                {pet.goodWithChildren ? 'Yes' : 'No'}
+              </span>
+            </div>
+          )}
+          {pet.goodWithDogs !== undefined && (
+            <div className="info-item">
+              <span className="info-label">Good with Dogs</span>
+              <span className={`info-value ${pet.goodWithDogs ? 'positive' : 'negative'}`}>
+                {pet.goodWithDogs ? 'Yes' : 'No'}
+              </span>
+            </div>
+          )}
+          {pet.goodWithCats !== undefined && (
+            <div className="info-item">
+              <span className="info-label">Good with Cats</span>
+              <span className={`info-value ${pet.goodWithCats ? 'positive' : 'negative'}`}>
+                {pet.goodWithCats ? 'Yes' : 'No'}
+              </span>
+            </div>
+          )}
+          {pet.houseTrained !== undefined && (
+            <div className="info-item">
+              <span className="info-label">House Trained</span>
+              <span className={`info-value ${pet.houseTrained ? 'positive' : 'negative'}`}>
+                {pet.houseTrained ? 'Yes' : 'No'}
+              </span>
+            </div>
+          )}
+          {pet.urgency && (
+            <div className="info-item">
+              <span className="info-label">Adoption Urgency</span>
+              <span className={`info-value urgency ${getUrgencyColor(pet.urgency)}`}>
+                {pet.urgency}
+              </span>
+            </div>
+          )}
+          {pet.adoptionFee && (
+            <div className="info-item">
+              <span className="info-label">Adoption Fee</span>
+              <span className="info-value">${pet.adoptionFee}</span>
+            </div>
+          )}
+          {pet.location && (
+            <div className="info-item">
+              <span className="info-label">Location</span>
+              <span className="info-value">{pet.location}</span>
+            </div>
+          )}
+          {pet.organization && (
+            <div className="info-item">
+              <span className="info-label">Organization</span>
+              <span className="info-value">{pet.organization}</span>
+            </div>
+          )}
+          {pet.arrivalDate && (
+            <div className="info-item">
+              <span className="info-label">Arrival Date</span>
+              <span className="info-value">{new Date(pet.arrivalDate).toLocaleDateString()}</span>
+            </div>
+          )}
+          {pet.medicalNotes && (
+            <div className="info-item full-width">
+              <span className="info-label">Medical Notes</span>
+              <span className="info-value">{pet.medicalNotes}</span>
+            </div>
+          )}
+          {pet.specialNeeds && (
+            <div className="info-item full-width">
+              <span className="info-label">Special Needs</span>
+              <span className="info-value">{pet.specialNeeds}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

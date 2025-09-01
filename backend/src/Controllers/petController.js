@@ -19,7 +19,6 @@ export const submitPet = async (req, res) => {
       healthIssues,
       specialNeeds,
       temperament,
-      goodWith,
       energyLevel,
       ownerMobile,
       ownerAddress,
@@ -35,18 +34,6 @@ export const submitPet = async (req, res) => {
     }
 
     const images = req.files ? req.files.map(file => file.path || file.url) : [];
-
-    let goodWithArray = [];
-    if (goodWith) {
-      try {
-        goodWithArray = typeof goodWith === 'string' ? JSON.parse(goodWith) : goodWith;
-        if (!Array.isArray(goodWithArray)) {
-          goodWithArray = [];
-        }
-      } catch (error) {
-        goodWithArray = [];
-      }
-    }
 
     const pet = new Pet({
       name,
@@ -64,7 +51,6 @@ export const submitPet = async (req, res) => {
       healthIssues,
       specialNeeds,
       temperament,
-      goodWith: goodWithArray,
       energyLevel,
       ownerMobile,
       ownerAddress,

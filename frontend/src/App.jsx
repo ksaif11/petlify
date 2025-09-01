@@ -10,7 +10,7 @@ import PetDetail from './pages/PetDetail/PetDetail';
 import AdoptionRequest from './pages/AdoptionRequest/AdoptionRequest';
 import MyAdoptions from './pages/MyAdoptions/MyAdoptions';
 import SubmitPet from './components/SubmitPet/SubmitPet';
-import OnlyAdmin from './pages/OnlyAdmin/OnlyAdmin';
+
 import Organization from './pages/Organization/Organization';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import './styles/global.css';
@@ -52,14 +52,7 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/only-admin" 
-              element={
-                <ProtectedRoute requireAdmin={true}>
-                  <OnlyAdmin />
-                </ProtectedRoute>
-              } 
-            />
+
             <Route 
               path="/organization" 
               element={
