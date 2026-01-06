@@ -59,9 +59,17 @@ export const login = async (userData) => {
 };
 
 // Pet API functions
-export const getAllPets = async () => {
-  const response = await api.get('/pets');
-  return response.data;
+export const getAllPets = async (page = 1, limit = 20, filters = {}) => {
+  const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
+  // Add filter parameters if provided
+  if (filters.search) params.append('search', filters.search);
+  if (filters.species) params.append('species', filters.species);
+  if (filters.age) params.append('age', filters.age);
+  if (filters.status) params.append('status', filters.status);
+  
+  const response = await api.get(`/pets?${params}`);
+  // Handle both old format (array) and new format (object with pets and pagination)
+  return response.data.pets || response.data;
 };
 
 export const getFeaturedPets = async () => {
@@ -89,14 +97,16 @@ export const submitAdoptionRequest = async (adoptionData) => {
   return response.data;
 };
 
-export const getUserAdoptionRequests = async () => {
-  const response = await api.get('/adoptions/my-requests');
-  return response.data;
+export const getUserAdoptionRequests = async (page = 1, limit = 20) => {
+  const response = await api.get(`/adoptions/my-requests?page=${page}&limit=${limit}`);
+  // Handle both old format (array) and new format (object with requests and pagination)
+  return response.data.requests || response.data;
 };
 
-export const getAllAdoptionRequests = async () => {
-  const response = await api.get('/adoptions/all');
-  return response.data;
+export const getAllAdoptionRequests = async (page = 1, limit = 20) => {
+  const response = await api.get(`/adoptions/all?page=${page}&limit=${limit}`);
+  // Handle both old format (array) and new format (object with requests and pagination)
+  return response.data.requests || response.data;
 };
 
 export const updateAdoptionRequestStatus = async (requestId, status) => {
@@ -107,14 +117,16 @@ export const updateAdoptionRequestStatus = async (requestId, status) => {
 // Organization API functions
 
 
-export const getPendingAdoptionRequests = async () => {
-  const response = await api.get('/adoptions/pending');
-  return response.data;
+export const getPendingAdoptionRequests = async (page = 1, limit = 20) => {
+  const response = await api.get(`/adoptions/pending?page=${page}&limit=${limit}`);
+  // Handle both old format (array) and new format (object with requests and pagination)
+  return response.data.requests || response.data;
 };
 
-export const getPendingPetSubmissions = async () => {
-  const response = await api.get('/pets/pending/submissions');
-  return response.data;
+export const getPendingPetSubmissions = async (page = 1, limit = 20) => {
+  const response = await api.get(`/pets/pending/submissions?page=${page}&limit=${limit}`);
+  // Handle both old format (array) and new format (object with pets and pagination)
+  return response.data.pets || response.data;
 };
 
 export const updatePetStatus = async (petId, status) => {

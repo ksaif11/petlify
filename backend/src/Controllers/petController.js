@@ -73,9 +73,10 @@ export const submitPet = async (req, res) => {
 
 export const getAllPets = async (req, res) => {
   try {
-    const { search, species, age, status } = req.query;
-    let query = { status: "approved" };
+    const { search, species, age, status, page = 1, limit = 20 } = req.query;
+    let query = { status: status || "approved" };
 
+    // Use text search if available, otherwise use regex (slower but works)
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -100,12 +101,31 @@ export const getAllPets = async (req, res) => {
       }
     }
 
-    if (status) {
-      query.status = status;
-    }
+    // Pagination
+    const pageNum = parseInt(page);
+    const limitNum = Math.min(parseInt(limit), 100); // Max 100 items per page
+    const skip = (pageNum - 1) * limitNum;
 
-    const pets = await Pet.find(query).sort({ createdAt: -1 });
-    res.json(pets);
+    // Get total count for pagination metadata
+    const total = await Pet.countDocuments(query);
+
+    // Use lean() for better performance and select only needed fields
+    const pets = await Pet.find(query)
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
+
+    res.json({
+      pets,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalItems: total,
+        itemsPerPage: limitNum
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching pets", error: error.message });
   }
@@ -120,7 +140,8 @@ export const getPetById = async (req, res) => {
       return res.status(400).json({ message: "Invalid pet ID format" });
     }
     
-    const pet = await Pet.findById(id);
+    // Use lean() for better performance
+    const pet = await Pet.findById(id).select('-__v').lean();
     if (!pet) {
       return res.status(404).json({ message: "Pet not found" });
     }
@@ -136,8 +157,30 @@ export const getPetById = async (req, res) => {
 
 export const getPendingPetSubmissions = async (req, res) => {
   try {
-    const pets = await Pet.find({ status: "pending" }).populate('submittedBy', 'name email');
-    res.json(pets);
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = Math.min(parseInt(limit), 100);
+    const skip = (pageNum - 1) * limitNum;
+
+    const total = await Pet.countDocuments({ status: "pending" });
+
+    const pets = await Pet.find({ status: "pending" })
+      .populate('submittedBy', 'name email')
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
+
+    res.json({
+      pets,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalItems: total,
+        itemsPerPage: limitNum
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching pending pets", error: error.message });
   }
@@ -151,12 +194,14 @@ export const updatePetStatus = async (req, res) => {
       return res.status(400).json({ message: "Pet ID and status are required" });
     }
     
-    const pet = await Pet.findByIdAndUpdate(petId, { status }, { new: true });
+    let pet = await Pet.findByIdAndUpdate(petId, { status }, { new: true }).select('-__v');
     
     if (!pet) {
       return res.status(404).json({ message: "Pet not found" });
     }
     
+    // Convert to plain object for better performance
+    pet = pet.toObject();
     res.json(pet);
   } catch (error) {
     res.status(500).json({ message: "Error updating pet status", error: error.message });
@@ -165,7 +210,12 @@ export const updatePetStatus = async (req, res) => {
 
 export const getFeaturedPets = async (req, res) => {
   try {
-    const pets = await Pet.find({ status: "approved" }).sort({ createdAt: -1 }).limit(3);
+    // Use lean() and select() for better performance
+    const pets = await Pet.find({ status: "approved" })
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .lean();
     res.json(pets);
   } catch (error) {
     res.status(500).json({ message: "Error fetching featured pets", error: error.message });

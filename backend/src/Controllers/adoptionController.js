@@ -43,7 +43,7 @@ export const submitAdoptionRequest = async (req, res) => {
       return res.status(400).json({ message: "Invalid pet ID format" });
     }
 
-    const pet = await Pet.findById(petId);
+    const pet = await Pet.findById(petId).lean();
     if (!pet) {
       return res.status(404).json({ message: "Pet not found" });
     }
@@ -51,7 +51,7 @@ export const submitAdoptionRequest = async (req, res) => {
     const existingRequest = await AdoptionRequest.findOne({
       pet: petId,
       user: req.user.id
-    });
+    }).lean();
 
     if (existingRequest) {
       return res.status(400).json({ message: "You have already submitted a request for this pet" });
@@ -98,10 +98,30 @@ export const submitAdoptionRequest = async (req, res) => {
 
 export const getUserAdoptionRequests = async (req, res) => {
   try {
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = Math.min(parseInt(limit), 100);
+    const skip = (pageNum - 1) * limitNum;
+
+    const total = await AdoptionRequest.countDocuments({ user: req.user.id });
+
     const requests = await AdoptionRequest.find({ user: req.user.id })
-      .populate('pet')
-      .sort({ createdAt: -1 });
-    res.json(requests);
+      .populate('pet', '-__v')
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
+
+    res.json({
+      requests,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalItems: total,
+        itemsPerPage: limitNum
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching adoption requests", error: error.message });
   }
@@ -109,11 +129,31 @@ export const getUserAdoptionRequests = async (req, res) => {
 
 export const getAllAdoptionRequests = async (req, res) => {
   try {
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = Math.min(parseInt(limit), 100);
+    const skip = (pageNum - 1) * limitNum;
+
+    const total = await AdoptionRequest.countDocuments();
+
     const requests = await AdoptionRequest.find()
-      .populate('pet')
+      .populate('pet', '-__v')
       .populate('user', 'name email')
-      .sort({ createdAt: -1 });
-    res.json(requests);
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
+
+    res.json({
+      requests,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalItems: total,
+        itemsPerPage: limitNum
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching adoption requests", error: error.message });
   }
@@ -121,11 +161,31 @@ export const getAllAdoptionRequests = async (req, res) => {
 
 export const getPendingAdoptionRequests = async (req, res) => {
   try {
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = Math.min(parseInt(limit), 100);
+    const skip = (pageNum - 1) * limitNum;
+
+    const total = await AdoptionRequest.countDocuments({ status: "pending" });
+
     const requests = await AdoptionRequest.find({ status: "pending" })
-      .populate('pet')
+      .populate('pet', '-__v')
       .populate('user', 'name email')
-      .sort({ createdAt: -1 });
-    res.json(requests);
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
+
+    res.json({
+      requests,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalItems: total,
+        itemsPerPage: limitNum
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching pending requests", error: error.message });
   }
@@ -139,16 +199,18 @@ export const updateAdoptionRequestStatus = async (req, res) => {
       return res.status(400).json({ message: "Request ID and status are required" });
     }
     
-    const request = await AdoptionRequest.findByIdAndUpdate(
+    let request = await AdoptionRequest.findByIdAndUpdate(
       requestId,
       { status },
       { new: true }
-    ).populate('pet').populate('user', 'name email');
+    ).populate('pet', '-__v').populate('user', 'name email').select('-__v');
     
     if (!request) {
       return res.status(404).json({ message: "Adoption request not found" });
     }
     
+    // Convert to plain object for better performance
+    request = request.toObject();
     res.json(request);
   } catch (error) {
     res.status(500).json({ message: "Error updating request status", error: error.message });

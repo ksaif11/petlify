@@ -34,4 +34,12 @@ const petSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Add indexes for frequently queried fields
+petSchema.index({ status: 1, createdAt: -1 }); // For getAllPets and getFeaturedPets
+petSchema.index({ name: 'text', species: 'text', breed: 'text', description: 'text' }); // Text search index
+petSchema.index({ species: 1 }); // For species filter
+petSchema.index({ age: 1 }); // For age filter
+petSchema.index({ submittedBy: 1 }); // For user's pets
+petSchema.index({ status: 1 }); // For status queries
+
 export default mongoose.model("Pet", petSchema);

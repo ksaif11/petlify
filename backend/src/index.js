@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import compression from "compression";
 import ConnectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import petRouter from "./routes/petRoutes.js";
@@ -10,6 +11,9 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 9000;
+
+// Enable compression middleware for faster responses
+app.use(compression());
 
 // CORS configuration
 const corsOptions = {
@@ -21,8 +25,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Optimize JSON parsing with limits
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use("/api/auth", authRouter);
 app.use("/api/pets", petRouter);
