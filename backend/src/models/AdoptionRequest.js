@@ -37,15 +37,16 @@ const adoptionRequestSchema = new mongoose.Schema({
   
   additionalInfo: { type: String, default: "" },
   
-  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+  status: { type: String, enum: ["pending", "approved", "rejected", "completed"], default: "pending" },
 }, {
   timestamps: true
 });
 
 // Add indexes for frequently queried fields
-adoptionRequestSchema.index({ user: 1, createdAt: -1 }); // For getUserAdoptionRequests
-adoptionRequestSchema.index({ status: 1, createdAt: -1 }); // For getPendingAdoptionRequests
-adoptionRequestSchema.index({ pet: 1, user: 1 }); // For checking existing requests
+adoptionRequestSchema.index({ user: 1, createdAt: -1 }); // For getUserAdoptionRequests (compound index)
+adoptionRequestSchema.index({ status: 1, createdAt: -1 }); // For getPendingAdoptionRequests (compound index)
+adoptionRequestSchema.index({ pet: 1, user: 1 }); // For checking existing requests (compound index - unique constraint)
 adoptionRequestSchema.index({ status: 1 }); // For status queries
+adoptionRequestSchema.index({ _id: 1 }); // Ensure _id is indexed (usually automatic, but explicit)
 
 export default mongoose.model("AdoptionRequest", adoptionRequestSchema);

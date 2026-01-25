@@ -12,7 +12,9 @@ const MyAdoptions = () => {
     const fetchAdoptionRequests = async () => {
       try {
         const data = await getUserAdoptionRequests();
-        setRequests(data);
+        // Handle both array and pagination object format
+        const requestsArray = Array.isArray(data) ? data : (data.requests || []);
+        setRequests(requestsArray);
       } catch {
         setError("Failed to load adoption requests");
       } finally {

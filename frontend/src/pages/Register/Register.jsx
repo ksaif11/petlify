@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { register } from '../../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { showError, showSuccess } from '../../utils/toast';
 import { validateEmail, validatePassword, validateRequired } from '../../utils/validation';
 import './Register.css';
@@ -47,8 +47,10 @@ const Register = () => {
       const response = await register({ name, email, password });
       sessionStorage.setItem('token', response.token);
       showSuccess('Registration successful!');
-      navigate('/');
-      window.location.reload();
+      // Small delay to show toast before navigation
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 500);
     } catch (error) {
       showError(error.userMessage || 'Registration failed. Please try again.');
     }
@@ -95,7 +97,7 @@ const Register = () => {
           <button type="submit">Register</button>
         </form>
         <p>
-          Already have an account? <a href="/login">Login here</a>.
+          Already have an account? <Link to="/login">Login here</Link>.
         </p>
       </div>
     </div>

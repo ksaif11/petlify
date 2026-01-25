@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { showError, showSuccess } from '../../utils/toast';
 import { validateEmail, validatePassword } from '../../utils/validation';
 import './Login.css';
@@ -10,6 +10,10 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get the page user was trying to access before login
+  const from = location.state?.from?.pathname || '/';
 
   const validateForm = () => {
     const newErrors = {};
@@ -40,8 +44,10 @@ const Login = () => {
       const response = await login({ email, password });
       sessionStorage.setItem('token', response.token);
       showSuccess('Login successful!');
-      navigate('/');
-      window.location.reload();
+      // Small delay to show toast before navigation
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 500);
     } catch (error) {
       showError(error.userMessage || 'Login failed. Please check your credentials.');
     }
@@ -77,7 +83,7 @@ const Login = () => {
           <button type="submit">Login</button>
         </form>
         <p>
-          Don&apos;t have an account? <a href="/register">Register here</a>.
+          Don&apos;t have an account? <Link to="/register">Register here</Link>.
         </p>
       </div>
     </div>

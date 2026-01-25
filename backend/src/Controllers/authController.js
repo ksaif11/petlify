@@ -19,8 +19,11 @@ export const register = async (req, res) => {
     const user = new User({ name, email, password});
     await user.save();
 
+    // Ensure isAdmin is always a boolean
+    const isAdmin = Boolean(user.isAdmin);
+    
     const token = jwt.sign(
-      { id: user._id, email: user.email, name: user.name, isAdmin: user.isAdmin },
+      { id: user._id, email: user.email, name: user.name, isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -28,7 +31,7 @@ export const register = async (req, res) => {
     res.status(201).json({
       message: "User registered successfully!",
       token,
-      user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin },
+      user: { id: user._id, name: user.name, email: user.email, isAdmin },
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error: " + error.message });
@@ -54,8 +57,11 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials!" });
     }
 
+    // Ensure isAdmin is always a boolean
+    const isAdmin = Boolean(user.isAdmin);
+    
     const token = jwt.sign(
-      { id: user._id, email: user.email, name: user.name, isAdmin: user.isAdmin },
+      { id: user._id, email: user.email, name: user.name, isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -63,7 +69,7 @@ export const login = async (req, res) => {
     res.json({
       message: "Login successful!",
       token,
-      user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin },
+      user: { id: user._id, name: user.name, email: user.email, isAdmin },
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error: " + error.message });

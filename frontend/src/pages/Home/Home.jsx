@@ -12,9 +12,9 @@ const Home = () => {
     const fetchFeaturedPets = async () => {
       try {
         const pets = await getFeaturedPets();
-        setFeaturedPets(pets);
-        console.log(pets, "???");
-        
+        // Handle both array and single object format
+        const petsArray = Array.isArray(pets) ? pets : (pets || []);
+        setFeaturedPets(petsArray);
       } catch {
         setFeaturedPets([]);
       } finally {

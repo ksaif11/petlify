@@ -29,7 +29,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expired or invalid, redirect to login
       sessionStorage.removeItem('token');
-      window.location.href = '/login';
+      // Only redirect if not already on login/register page
+      if (!window.location.pathname.includes('/login') && 
+          !window.location.pathname.includes('/register')) {
+        // Use window.location for API interceptor since we can't use navigate here
+        window.location.href = '/login';
+      }
     }
     
     // Enhance error object with better error message
@@ -40,8 +45,10 @@ api.interceptors.response.use(
     
     error.userMessage = errorMessage;
     
-    // Log error for debugging
-    console.error('API Error:', error);
+    // Log error for debugging (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('API Error:', error);
+    }
     
     return Promise.reject(error);
   }

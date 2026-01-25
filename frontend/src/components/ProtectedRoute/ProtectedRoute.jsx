@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { showError } from '../../utils/toast';
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -26,12 +28,31 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        showError('Please login to access this page.');
+      } else if (requireAdmin && !isAdmin) {
+        showError('Admin access required. You do not have permission to view this page.');
+      }
+    }
+  }, [isLoading, isAuthenticated, isAdmin, requireAdmin]);
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '50vh' 
+      }}>
+        <div>Loading...</div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (requireAdmin && !isAdmin) {

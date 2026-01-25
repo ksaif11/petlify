@@ -28,18 +28,19 @@ const petSchema = new mongoose.Schema({
   rehomingUrgency: { type: String, required: true },
   
   images: [{ type: String }],
-  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+  status: { type: String, enum: ["pending", "approved", "rejected", "adopted"], default: "pending" },
   submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 }, {
   timestamps: true
 });
 
 // Add indexes for frequently queried fields
-petSchema.index({ status: 1, createdAt: -1 }); // For getAllPets and getFeaturedPets
+petSchema.index({ status: 1, createdAt: -1 }); // For getAllPets and getFeaturedPets (compound index)
 petSchema.index({ name: 'text', species: 'text', breed: 'text', description: 'text' }); // Text search index
-petSchema.index({ species: 1 }); // For species filter
-petSchema.index({ age: 1 }); // For age filter
-petSchema.index({ submittedBy: 1 }); // For user's pets
+petSchema.index({ species: 1, status: 1 }); // For species filter with status (compound index)
+petSchema.index({ age: 1, status: 1 }); // For age filter with status (compound index)
+petSchema.index({ submittedBy: 1, createdAt: -1 }); // For user's pets (compound index)
 petSchema.index({ status: 1 }); // For status queries
+petSchema.index({ _id: 1 }); // Ensure _id is indexed (usually automatic, but explicit)
 
 export default mongoose.model("Pet", petSchema);

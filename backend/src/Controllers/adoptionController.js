@@ -4,6 +4,11 @@ import User from "../models/User.js";
 
 export const submitAdoptionRequest = async (req, res) => {
   try {
+    // Ensure user is authenticated
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
     const {
       petId,
       applicantName,
@@ -98,20 +103,27 @@ export const submitAdoptionRequest = async (req, res) => {
 
 export const getUserAdoptionRequests = async (req, res) => {
   try {
+    // Ensure user is authenticated
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
     const { page = 1, limit = 20 } = req.query;
     const pageNum = parseInt(page);
     const limitNum = Math.min(parseInt(limit), 100);
     const skip = (pageNum - 1) * limitNum;
 
-    const total = await AdoptionRequest.countDocuments({ user: req.user.id });
-
-    const requests = await AdoptionRequest.find({ user: req.user.id })
-      .populate('pet', '-__v')
-      .select('-__v')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limitNum)
-      .lean();
+    // Run count and find queries in parallel for better performance
+    const [total, requests] = await Promise.all([
+      AdoptionRequest.countDocuments({ user: req.user.id }),
+      AdoptionRequest.find({ user: req.user.id })
+        .populate('pet', '-__v')
+        .select('-__v')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .lean()
+    ]);
 
     res.json({
       requests,
@@ -129,21 +141,32 @@ export const getUserAdoptionRequests = async (req, res) => {
 
 export const getAllAdoptionRequests = async (req, res) => {
   try {
+    // Ensure user is authenticated and is admin
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
     const { page = 1, limit = 20 } = req.query;
     const pageNum = parseInt(page);
     const limitNum = Math.min(parseInt(limit), 100);
     const skip = (pageNum - 1) * limitNum;
 
-    const total = await AdoptionRequest.countDocuments();
-
-    const requests = await AdoptionRequest.find()
-      .populate('pet', '-__v')
-      .populate('user', 'name email')
-      .select('-__v')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limitNum)
-      .lean();
+    // Run count and find queries in parallel for better performance
+    const [total, requests] = await Promise.all([
+      AdoptionRequest.countDocuments(),
+      AdoptionRequest.find()
+        .populate('pet', '-__v -submittedBy') // Exclude unnecessary fields
+        .populate('user', 'name email -_id') // Select only needed fields
+        .select('-__v')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .lean()
+    ]);
 
     res.json({
       requests,
@@ -161,21 +184,32 @@ export const getAllAdoptionRequests = async (req, res) => {
 
 export const getPendingAdoptionRequests = async (req, res) => {
   try {
+    // Ensure user is authenticated and is admin
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
     const { page = 1, limit = 20 } = req.query;
     const pageNum = parseInt(page);
     const limitNum = Math.min(parseInt(limit), 100);
     const skip = (pageNum - 1) * limitNum;
 
-    const total = await AdoptionRequest.countDocuments({ status: "pending" });
-
-    const requests = await AdoptionRequest.find({ status: "pending" })
-      .populate('pet', '-__v')
-      .populate('user', 'name email')
-      .select('-__v')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limitNum)
-      .lean();
+    // Run count and find queries in parallel for better performance
+    const [total, requests] = await Promise.all([
+      AdoptionRequest.countDocuments({ status: "pending" }),
+      AdoptionRequest.find({ status: "pending" })
+        .populate('pet', '-__v -submittedBy') // Exclude unnecessary fields
+        .populate('user', 'name email -_id') // Select only needed fields
+        .select('-__v')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .lean()
+    ]);
 
     res.json({
       requests,
@@ -193,24 +227,46 @@ export const getPendingAdoptionRequests = async (req, res) => {
 
 export const updateAdoptionRequestStatus = async (req, res) => {
   try {
+    // Ensure user is authenticated and is admin
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
     const { requestId, status } = req.body;
     
     if (!requestId || !status) {
       return res.status(400).json({ message: "Request ID and status are required" });
     }
     
-    let request = await AdoptionRequest.findByIdAndUpdate(
+    // Validate status value
+    const validStatuses = ['pending', 'approved', 'rejected', 'completed'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
+    }
+    
+    // Validate requestId format
+    if (!requestId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid request ID format" });
+    }
+    
+    const request = await AdoptionRequest.findByIdAndUpdate(
       requestId,
       { status },
       { new: true }
-    ).populate('pet', '-__v').populate('user', 'name email').select('-__v');
+    )
+      .populate('pet', '-__v -submittedBy') // Exclude unnecessary fields
+      .populate('user', 'name email -_id') // Select only needed fields
+      .select('-__v')
+      .lean();
     
     if (!request) {
       return res.status(404).json({ message: "Adoption request not found" });
     }
     
-    // Convert to plain object for better performance
-    request = request.toObject();
     res.json(request);
   } catch (error) {
     res.status(500).json({ message: "Error updating request status", error: error.message });

@@ -42,8 +42,8 @@ const Navbar = () => {
     setIsLoggedIn(false);
     setIsAdmin(false);
     setUserName("");
-    navigate("/login");
     setIsProfileOpen(false);
+    navigate("/login", { replace: true });
   };
 
   const handleProfileAction = (action) => {

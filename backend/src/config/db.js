@@ -11,9 +11,13 @@ const ConnectDB = async () => {
     }
     // Optimize MongoDB connection settings for better performance
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      maxPoolSize: 10, // Maintain up to 10 socket connections
+      maxPoolSize: 50, // Maintain up to 50 socket connections (increased for better concurrency)
+      minPoolSize: 5, // Maintain minimum 5 connections
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+      bufferMaxEntries: 0, // Disable mongoose buffering
+      bufferCommands: false, // Disable mongoose buffering
     });
     console.log("MongoDB connected successfully");
     return conn;

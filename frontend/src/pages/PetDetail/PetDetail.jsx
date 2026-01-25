@@ -23,7 +23,9 @@ const PetDetail = () => {
         if (loggedIn) {
           try {
             const requests = await getUserAdoptionRequests();
-            setUserRequests(requests);
+            // Handle both array and pagination object format
+            const requestsArray = Array.isArray(requests) ? requests : (requests.requests || []);
+            setUserRequests(requestsArray);
           } catch (requestError) {
             console.error('Error fetching user requests:', requestError);
             // Don't fail the whole component if user requests fail

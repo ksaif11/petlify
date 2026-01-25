@@ -22,8 +22,10 @@ const PetList = () => {
         setLoading(true);
         setError('');
         const data = await getAllPets();
-        setPets(data);
-        setFilteredPets(data);
+        // Handle both array and pagination object format
+        const petsArray = Array.isArray(data) ? data : (data.pets || []);
+        setPets(petsArray);
+        setFilteredPets(petsArray);
       } catch (error) {
         setError('Failed to load pets. Please try again.');
       } finally {

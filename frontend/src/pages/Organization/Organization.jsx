@@ -31,8 +31,9 @@ const Organization = () => {
         getPendingAdoptionRequests(),
         getPendingPetSubmissions()
       ]);
-      setAdoptionRequests(requestsData);
-      setPetSubmissions(submissionsData);
+      // Handle both array and pagination object format
+      setAdoptionRequests(Array.isArray(requestsData) ? requestsData : (requestsData.requests || []));
+      setPetSubmissions(Array.isArray(submissionsData) ? submissionsData : (submissionsData.pets || []));
     } catch (err) {
       console.error('Error fetching data:', err);
       setError(err.userMessage || 'Failed to load data. Please try again.');

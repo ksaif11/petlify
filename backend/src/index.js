@@ -12,8 +12,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-// Enable compression middleware for faster responses
-app.use(compression());
+// Enable compression middleware for faster responses (compress all responses)
+app.use(compression({
+  level: 6, // Compression level (1-9, 6 is a good balance)
+  threshold: 1024, // Only compress responses larger than 1KB
+}));
 
 // CORS configuration
 const corsOptions = {
@@ -28,6 +31,16 @@ app.use(cors(corsOptions));
 // Optimize JSON parsing with limits
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Add response time tracking middleware (for monitoring)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    res.setHeader('X-Response-Time', `${duration}ms`);
+  });
+  next();
+});
 
 app.use("/api/auth", authRouter);
 app.use("/api/pets", petRouter);
