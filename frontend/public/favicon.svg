@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Pet Paw Print Favicon -->
+  <defs>
+    <linearGradient id="pawGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#pawGradient)"/>
+  
+  <!-- Paw pad (center) -->
+  <ellipse cx="50" cy="60" rx="12" ry="15" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Top left toe -->
+  <ellipse cx="35" cy="40" rx="8" ry="10" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Top right toe -->
+  <ellipse cx="65" cy="40" rx="8" ry="10" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Bottom left toe -->
+  <ellipse cx="30" cy="65" rx="7" ry="9" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Bottom right toe -->
+  <ellipse cx="70" cy="65" rx="7" ry="9" fill="#ffffff" opacity="0.95"/>
+</svg>
